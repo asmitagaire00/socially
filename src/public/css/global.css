@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-primary: #e44232;
+    --color-secondary: #f9f7f7;
+
+    --color-gray: #eee;
+    --color-gray-dark: rgb(139, 139, 139);
+    --color-red: #ff0000;
+    --color-yellow: #ffd700;
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --margin-s: 3px;
+    --margin-m: 5px;
+    --margin-l: 8px;
+    --margin-xl: 13px;
+    --margin-xxl: 21px;
+    --margin-page: 33px;
+
+    --padding-s: 3px;
+    --padding-m: 5px;
+    --padding-l: 8px;
+    --padding-xl: 13px;
+    --padding-xxl: 21px;
+
+    --font-default: 1rem;
+    --font-m: 1.2rem;
+    --font-l: 1.5rem;
+
+    --logo-text: 24px;
+
+    --height-header: 60px;
+
+    --width-sidebar: 300px;
+
+    --icon-size: 1.5rem;
+}
+
+html {
+    font-family: Roboto, sans-serif;
+}
+
+body {
+    font-size: var(--font-default);
+    background-color: var(--color-white);
+}
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* override material svg icon size, default is 1.5rem*/
+.MuiSvgIcon-root {
+    font-size: var(--icon-size) !important;
+}
+
+/* override material props*/
+.MuiIconButton-root {
+    transition: none !important;
+}

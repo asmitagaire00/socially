@@ -1,0 +1,6 @@
+@import "./global.css";
+@import "../js/components/App/App.css";
+@import "../js/components/Header/header.css";
+@import "../js/components/Feed/feed.css";
+@import "../js/components/Sidebar/sidebar.css";
+@import "../js/components/SidebarRight/sidebarRight.css";

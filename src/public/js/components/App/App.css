@@ -1,0 +1,5 @@
+.app__main {
+    display: flex;
+    border: 1px solid magenta;
+    margin: 0px var(--margin-page);
+}
