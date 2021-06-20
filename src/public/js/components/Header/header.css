@@ -76,10 +76,10 @@ header {
 }
 
 .header__links {
+    flex: 0 1 var(--width-sidebar);
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    flex: 3 1 auto;
 }
 
 .header__icon-btn {
