@@ -1,0 +1,18 @@
+.post{
+    margin-top: var(--margin-xl);
+    margin-bottom: var(--margin-m);
+}
+
+.post__image{
+    height: 0;
+    padding-top: 56.25%; /* 16:9 */
+}
+
+.post__info{
+    display: flex;
+    margin-left: auto;
+}
+
+.post__comments{
+    padding-left: var(--padding-xl);
+}
