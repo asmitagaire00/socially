@@ -1,7 +1,11 @@
 {
-    "extends": ["airbnb", "prettier", "plugin:jest/recommended"],
-    "plugins": ["prettier", "jest"],
-    "rules": {
-        "prettier/prettier": ["error"]
-    }
+  "extends": ["airbnb", "prettier", "plugin:jest/recommended"],
+  "plugins": ["prettier", "jest"],
+  "rules": {
+    "prettier/prettier": ["error"]
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  }
 }
