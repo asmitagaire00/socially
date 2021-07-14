@@ -39,7 +39,7 @@ export default function Alert({ open, title, text }) {
 }
 
 Alert.propTypes = {
-  open: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
   title: PropTypes.string,
   text: PropTypes.string,
 };
