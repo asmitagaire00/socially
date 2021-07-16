@@ -1,4 +1,53 @@
 .sidebar-right {
     flex: 0 1 var(--width-sidebar);
+    margin-top: var(--margin-xl);
     border: 1px solid black;
+}
+
+.sidebar-right__birthday {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--margin-xxl);
+}
+
+.sidebar-right__birthday-icon {
+    margin-right: var(--margin-m);
+    margin-left: var(--margin-m);
+}
+
+.sidebar-right__birthday-icon > svg {
+    fill: var(--color-primary);
+}
+
+.sidebar-right__featured-img {
+    max-height: 300px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.sidebar-right__chat {
+    margin-top: var(--margin-xxl);
+}
+
+.sidebar-right__chat-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.sidebar-right__chat-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--margin-m);
+}
+
+.sidebar-right__avatar {
+    border-radius: 0 !important;
+    margin-right: var(--margin-xl);
+}
+
+.sidebar-right__avatar--active {
+    border-radius: 0 !important;
+    margin-right: var(--margin-xl);
+    border: 2px solid var(--color-green);
 }
