@@ -46,7 +46,7 @@ async function autoLogin(token) {
   return fetch(`${config.apiUrl}/api/v1/account/auto-login`, reqOptions);
 }
 
-async function logout() {
+async function logout(token) {
   // 'refreshToken' cookie is sent
   const reqOptions = {
     method: 'POST',
@@ -54,6 +54,7 @@ async function logout() {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
   };
 
