@@ -1,61 +1,76 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 import { userService } from '../services/userService';
+import { setError } from './ErrorNotificationSlice';
+import errorDetails from '../config/error';
 
 const initialState = {
   loading: false,
   error: false,
-  errorMessage: '',
+  errorMessage: null,
   user: null,
 };
 
 const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const response = await userService.login(email, password);
       const res = await response.json();
 
-      if (response.status !== 200) return rejectWithValue(res);
+      if (!response.ok) {
+        dispatch(setError(res.error.message));
+        return rejectWithValue(res.error.message);
+      }
 
-      localStorage.setItem('jwtToken', res.jwtToken);
+      localStorage.setItem('jwtToken', res.data.jwtToken);
       return res;
     } catch (error) {
-      return rejectWithValue(error);
+      // log promise rejection error somewhere, display default error message
+      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
 );
 
 const autoLogin = createAsyncThunk(
   'auth/autoLogin',
-  async (jwtToken, { rejectWithValue }) => {
+  async (jwtToken, { rejectWithValue, dispatch }) => {
     try {
       const response = await userService.autoLogin(jwtToken);
       const res = await response.json();
 
-      if (response.status !== 200) return rejectWithValue(res);
+      if (!response.ok) {
+        dispatch(setError(res.error.message));
+        return rejectWithValue(res.error.message);
+      }
 
       return res;
     } catch (error) {
-      rejectWithValue(error);
+      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
 );
 
 const logout = createAsyncThunk(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
+  async (jwtToken, { rejectWithValue, dispatch }) => {
     try {
-      const response = await userService.logout();
+      const response = await userService.logout(jwtToken);
       const res = response.json();
 
-      if (response.status !== 200) rejectWithValue(res);
-      // remove token from localStorage
+      if (!response.ok) {
+        dispatch(setError(res.error.message));
+        return rejectWithValue(res.error.message);
+      }
+
       localStorage.removeItem('jwtToken');
       return res;
     } catch (error) {
-      rejectWithValue(error);
+      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
 );
@@ -71,11 +86,13 @@ const AuthSlice = createSlice({
     [login.rejected]: (state, { payload }) => {
       state.error = true;
       state.loading = false;
-      state.errorMessage = payload.message;
+      state.errorMessage = payload;
     },
     [login.fulfilled]: (state, { payload }) => {
-      state.user = payload;
+      state.user = payload.data;
       state.loading = false;
+      state.error = false;
+      state.errorMessage = null;
     },
 
     [autoLogin.pending]: (state) => {
@@ -84,11 +101,13 @@ const AuthSlice = createSlice({
     [autoLogin.rejected]: (state, { payload }) => {
       state.error = true;
       state.loading = false;
-      state.errorMessage = payload.message;
+      state.errorMessage = payload;
     },
     [autoLogin.fulfilled]: (state, { payload }) => {
       state.loading = false;
-      state.user = payload;
+      state.user = payload.data;
+      state.error = false;
+      state.errorMessage = null;
     },
 
     [logout.pending]: (state) => {
@@ -97,11 +116,13 @@ const AuthSlice = createSlice({
     [logout.rejected]: (state, { payload }) => {
       state.error = true;
       state.loading = false;
-      state.errorMessage = payload.message;
+      state.errorMessage = payload;
     },
     [logout.fulfilled]: (state) => {
       state.loading = false;
       state.user = null;
+      state.error = false;
+      state.errorMessage = null;
     },
   },
 });
