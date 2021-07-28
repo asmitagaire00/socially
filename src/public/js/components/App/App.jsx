@@ -29,7 +29,6 @@ function AppDashboard() {
 }
 
 export default function App() {
-  const { open, title, text } = useSelector((state) => state.alert);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -40,7 +39,7 @@ export default function App() {
 
   return (
     <>
-      <Alert open={open} title={title} text={text} />
+      <Alert />
       <BrowserRouter>
         <Switch>
           <Route path={routes.login}>
