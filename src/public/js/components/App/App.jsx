@@ -14,6 +14,7 @@ import Login from '../Login';
 import Register from '../Register';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { autoLogin } from '../../redux/AuthSlice';
+import VerifyEmail from '../VerifyEmail';
 
 function AppDashboard() {
   return (
@@ -47,6 +48,9 @@ export default function App() {
           </Route>
           <Route path={routes.register}>
             <Register />
+          </Route>
+          <Route path="/account/verify-email">
+            <VerifyEmail />
           </Route>
           <ProtectedRoute path={routes.root} exact>
             <AppDashboard />
