@@ -7,14 +7,13 @@ import Avatar from '@material-ui/core/Avatar';
 import FeaturedImg from '../../../assets/img/girl.jpg';
 import AvatarImg from '../../../assets/img/dennis.jpeg';
 
-import { showAlert } from '../Alert/AlertSlice';
 import { logout } from '../../redux/AuthSlice';
 
 export default function SidebarRight() {
   const dispatch = useDispatch();
 
   function handleClick() {
-    dispatch(showAlert());
+    // dispatch(showAlert());
   }
 
   function handleLogoutClick() {

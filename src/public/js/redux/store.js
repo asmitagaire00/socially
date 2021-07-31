@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import alertReducer from '../components/Alert/AlertSlice';
+import { reducer as formReducer } from 'redux-form';
 import authReducer from './AuthSlice';
-import errorReducer from './ErrorNotificationSlice';
+import notificationReducer from './NotificationSlice';
 
 const store = configureStore({
   reducer: {
-    alert: alertReducer,
     auth: authReducer,
-    errorNotification: errorReducer,
+    notification: notificationReducer,
+    form: formReducer,
   },
   devTools: process.env.NODE_ENV !== 'production',
 });
