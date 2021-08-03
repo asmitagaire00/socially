@@ -2,7 +2,7 @@
 import config from '../config/config';
 
 // eslint-disable-next-line import/prefer-default-export
-export const userService = { register, login, autoLogin, logout };
+export const userService = { register, login, autoLogin, logout, verifyEmail };
 
 async function register(user) {
   const reqOptions = {
@@ -59,4 +59,18 @@ async function logout(token) {
   };
 
   return fetch(`${config.apiUrl}/api/v1/account/revoke-token`, reqOptions);
+}
+
+async function verifyEmail(emailVerificationToken) {
+  const reqOptions = {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ emailVerificationToken }),
+  };
+
+  return fetch(`${config.apiUrl}/api/v1/account/verify-email`, reqOptions);
 }

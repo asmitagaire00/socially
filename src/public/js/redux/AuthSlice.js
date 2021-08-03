@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { userService } from '../services/userService';
-import { setError } from './ErrorNotificationSlice';
+import { setNotification } from './NotificationSlice';
 import errorDetails from '../config/error';
 
 const initialState = {
@@ -12,6 +12,46 @@ const initialState = {
   user: null,
 };
 
+const register = createAsyncThunk(
+  'auth/register',
+  async (
+    { firstName, lastName, email, password, confirmPassword },
+    { rejectWithValue, dispatch },
+  ) => {
+    try {
+      const response = await userService.register({
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      });
+      const res = await response.json();
+
+      if (!response.ok) {
+        dispatch(
+          setNotification({ message: res.error.message, isError: true }),
+        );
+        return rejectWithValue(res.error.message);
+      }
+
+      // send success feedback
+      dispatch(setNotification({ message: res.message, isError: false }));
+
+      return res;
+    } catch (error) {
+      // log promise rejection error somewhere, display default error message
+      dispatch(
+        setNotification({
+          message: errorDetails.DEFAULT_ERROR_MSG,
+          isError: true,
+        }),
+      );
+      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
+    }
+  },
+);
+
 const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue, dispatch }) => {
@@ -20,7 +60,9 @@ const login = createAsyncThunk(
       const res = await response.json();
 
       if (!response.ok) {
-        dispatch(setError(res.error.message));
+        dispatch(
+          setNotification({ message: res.error.message, isError: true }),
+        );
         return rejectWithValue(res.error.message);
       }
 
@@ -28,7 +70,12 @@ const login = createAsyncThunk(
       return res;
     } catch (error) {
       // log promise rejection error somewhere, display default error message
-      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      dispatch(
+        setNotification({
+          message: errorDetails.DEFAULT_ERROR_MSG,
+          isError: true,
+        }),
+      );
       return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
@@ -42,13 +89,13 @@ const autoLogin = createAsyncThunk(
       const res = await response.json();
 
       if (!response.ok) {
-        dispatch(setError(res.error.message));
+        dispatch(setNotification(res.error.message));
         return rejectWithValue(res.error.message);
       }
 
       return res;
     } catch (error) {
-      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      dispatch(setNotification(errorDetails.DEFAULT_ERROR_MSG));
       return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
@@ -62,14 +109,14 @@ const logout = createAsyncThunk(
       const res = response.json();
 
       if (!response.ok) {
-        dispatch(setError(res.error.message));
+        dispatch(setNotification(res.error.message));
         return rejectWithValue(res.error.message);
       }
 
       localStorage.removeItem('jwtToken');
       return res;
     } catch (error) {
-      dispatch(setError(errorDetails.DEFAULT_ERROR_MSG));
+      dispatch(setNotification(errorDetails.DEFAULT_ERROR_MSG));
       return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
     }
   },
@@ -80,6 +127,21 @@ const AuthSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
+    [register.pending]: (state) => {
+      state.loading = true;
+    },
+    [register.rejected]: (state, { payload }) => {
+      state.error = true;
+      state.loading = false;
+      state.errorMessage = payload;
+    },
+    [register.fulfilled]: (state, { payload }) => {
+      state.user = payload.data;
+      state.loading = false;
+      state.error = false;
+      state.errorMessage = null;
+    },
+
     [login.pending]: (state) => {
       state.loading = true;
     },
@@ -127,5 +189,5 @@ const AuthSlice = createSlice({
   },
 });
 
-export { login, autoLogin, logout };
+export { register, login, autoLogin, logout };
 export default AuthSlice.reducer;
