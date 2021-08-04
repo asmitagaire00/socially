@@ -21,7 +21,7 @@
   },
   "basePath": "/api/v1",
   "paths": {
-    "/accounts/register": {
+    "/account/register": {
       "post": {
         "summary": "Register a new account",
         "tags": ["account"],
@@ -143,7 +143,7 @@
       }
     },
 
-    "/accounts/verify-email": {
+    "/account/verify-email": {
       "post": {
         "summary": "Verify email",
         "tags": ["account"],
@@ -223,7 +223,7 @@
       }
     },
 
-    "/accounts/login": {
+    "/account/login": {
       "post": {
         "summary": "Log in to an account",
         "tags": ["account"],
@@ -321,7 +321,7 @@
       }
     },
 
-    "/accounts/refresh-token": {
+    "/account/refresh-token": {
       "post": {
         "summary": "Refresh token.",
         "tags": ["account"],
@@ -389,7 +389,7 @@
       }
     },
 
-    "/accounts/revoke-token": {
+    "/account/revoke-token": {
       "post": {
         "summary": "Revoke token.",
         "tags": ["account"],
@@ -472,7 +472,7 @@
       }
     },
 
-    "/accounts/auto-login": {
+    "/account/auto-login": {
       "post": {
         "summary": "Auto login without email and password.",
         "tags": ["account"],
