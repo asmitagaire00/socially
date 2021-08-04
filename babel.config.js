@@ -7,11 +7,10 @@ module.exports = {
     [
       '@babel/preset-env',
       {
-        targets: {
-          esmodules: true,
-        },
+        targets: '> 0.25%, not dead',
       },
     ],
     '@babel/preset-react',
   ],
+  plugins: ['@babel/transform-runtime'],
 };
