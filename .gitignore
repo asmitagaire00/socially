@@ -1,4 +1,8 @@
 ### Node ###
+
+# api test
+*.rest
+
 # Logs
 logs
 *.log
