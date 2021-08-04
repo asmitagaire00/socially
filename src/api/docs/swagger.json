@@ -1,0 +1,599 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Socially api",
+    "version": "1.0.0",
+    "description": "An express api for socially.",
+    "license": {
+      "name": "MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    },
+    "contact": {
+      "name": "Socially Kishor",
+      "email": "kishorliv@gmail.com"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000/api/v1",
+        "description": "Development server"
+      }
+    ]
+  },
+  "basePath": "/api/v1",
+  "paths": {
+    "/accounts/register": {
+      "post": {
+        "summary": "Register a new account",
+        "tags": ["account"],
+        "description": "Register a new account and send a verification email. If the user is already registered and not verified, email verification is sent again.",
+        "operationId": "register",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "example": "Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "foo@foo"
+                  },
+                  "confirmPassword": {
+                    "type": "string",
+                    "example": "foo@foo"
+                  }
+                },
+                "required": [
+                  "firstName",
+                  "lastName",
+                  "email",
+                  "password",
+                  "confirmPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful account registration and email has been sent for verification.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Registration successful. Please check your email for verification."
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "Registration successful. Please check your email for verification.",
+                    "success": "true"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Account registration failed(several reasons, check error type). Note: Validation errors have 'errors' property which contains the list of validation errors.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schema/error"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "examples": {
+                  "example1": {
+                    "value": {
+                      "error": {
+                        "name": "ApplicationError",
+                        "type": "SOCIALLY",
+                        "code": "EMAIL_ALREADY_TAKEN_VERIFIED",
+                        "message": "Account with the given email address already exists!",
+                        "statusCode": 400
+                      },
+                      "success": false
+                    }
+                  },
+                  "example2": {
+                    "value": {
+                      "error": {
+                        "name": "ApplicationError",
+                        "type": "SOCIALLY",
+                        "code": "VALIDATION_ERROR",
+                        "message": "Joi validation error.",
+                        "errors": [
+                          "\"password\" length must be at least 6 characters long",
+                          "\"confirmPassword\" must be [ref:password]"
+                        ],
+                        "statusCode": 400
+                      },
+                      "success": false
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/accounts/verify-email": {
+      "post": {
+        "summary": "Verify email",
+        "tags": ["account"],
+        "description": "If the user is registered but not verified and tries to register with same email, email verification is sent again.",
+        "operationId": "verify-email",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emailVerificationToken": {
+                    "type": "string",
+                    "description": "A verification token string.",
+                    "example": "e3b0bff5153c27cc3826d72h8926183ff0dad6a7820f1aa0kc25a2524256296a87679de9e9f746cf"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful email verification.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Registration successful. You can login now."
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "Registration successful. You can login now.",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email verification failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schema/error"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "name": "ApplicationError",
+                    "type": "SOCIALLY",
+                    "code": "EMAIL_VERIFICATION_FAILED",
+                    "message": "Email verification failed!",
+                    "statusCode": 400
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/accounts/login": {
+      "post": {
+        "summary": "Log in to an account",
+        "tags": ["account"],
+        "description": "Log in to an account using email and password. Api returns a new set of jwt and refresh token. Refresh token is sent in an http only cookie, jwt token is sent in a body along with other user details.",
+        "operationId": "login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "A valid email.",
+                    "example": "foo@foo.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "A valid password.",
+                    "example": "strongPassword"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful email verification.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schema/loginResponseData"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful."
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "id": "60f6cb1ae8f56f5dc8dbecdb",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "email": "foo@foo.com",
+                      "createdAt": "2021-07-20T13:09:35.585Z",
+                      "verifiedAt": "2021-07-20T13:14:39.851Z",
+                      "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    },
+                    "message": "Login successful.",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Login unsuccessful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schema/error"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "name": "ApplicationError",
+                    "type": "SOCIALLY",
+                    "code": "INCORRECT_CREDENTIALS",
+                    "message": "Incorrect email or password!",
+                    "statusCode": 400
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/accounts/refresh-token": {
+      "post": {
+        "summary": "Refresh token.",
+        "tags": ["account"],
+        "description": "Generate new jwt and refresh token off of the current valid refresh token. Cookie containing the refresh token must be sent by the client to get the new one. Jwt token is returned in the body whereas refresh token is sent in the http only cookie.",
+        "operationId": "refresh-token",
+        "responses": {
+          "200": {
+            "description": "Successful rotation of refresh token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schema/refreshTokenResponse"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Registration successful. You can login now."
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": {
+                      "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                    },
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Refresh token regeneration failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schema/error"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "name": "ApplicationError",
+                    "type": "SOCIALLY",
+                    "code": "INVALID_REFRESH_TOKEN",
+                    "message": "Invalid refresh token or token not found!",
+                    "statusCode": 400
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/accounts/revoke-token": {
+      "post": {
+        "summary": "Revoke token.",
+        "tags": ["account"],
+        "description": "Revokes refresh token. Refresh token is sent in a cookie or can be sent in a body as well.",
+        "operationId": "revoke-token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "description": "A valid refresh token.",
+                    "example": "41dafb13f5902eaad1d62bc8f82e4577d341b9d1e74b1acd14a01eaa836be1005166851e068f6ae1"
+                  }
+                },
+                "example": {
+                  "refreshToken": "fed9991c0e3b4541be0d083126776fac3f16d14e86a7e567060bb47ad0720649d33e998d765b1f3a"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token revoked successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": null,
+                    "message": {
+                      "type": "string",
+                      "example": "Token revoked successfully."
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "Token revoked successfully.",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token revoke operation failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schema/error"
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "name": "ApplicationError",
+                    "type": "SOCIALLY",
+                    "code": "INVALID_REFRESH_TOKEN",
+                    "message": "Invalid refresh token or token not found!",
+                    "statusCode": 400
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/accounts/auto-login": {
+      "post": {
+        "summary": "Auto login without email and password.",
+        "tags": ["account"],
+        "description": "Auto login without email and password, using valid jwt token. Note: Bearer token required in Authorization header.",
+        "operationId": "auto-login",
+
+        "responses": {
+          "200": {
+            "description": "Auto logged in user successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": null,
+                    "message": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "example": {
+                    "data": null,
+                    "message": "",
+                    "success": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Auto login failed."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schema": {
+      "error": {
+        "name": {
+          "type": "string",
+          "description": "Name of the general error.",
+          "example": "ApplicationError"
+        },
+        "type": {
+          "type": "string",
+          "description": "Type of ApplicationError.",
+          "example": "SOCIALLY"
+        },
+        "code": {
+          "type": "string",
+          "description": "Error code.",
+          "example": "EMAIL_ALREADY_TAKEN_VERIFIED"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message.",
+          "example": "Account with the given email address already exists!"
+        },
+        "errors": {
+          "type": "array",
+          "description": "Contains objects when validation error occurs. Empty or null otherwise."
+        },
+        "statusCode": {
+          "type": "number",
+          "description": "Http status code.",
+          "example": "400"
+        }
+      },
+
+      "loginResponseData": {
+        "id": {
+          "type": "string",
+          "description": "User id.",
+          "example": "60f6cb1ae8f56f5dc8dbecdb"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name.",
+          "example": "John"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name.",
+          "example": "Doe"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "A valid email.",
+          "example": "foo@foo.com"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "User created at timestamp.",
+          "example": "2021-07-20T13:09:35.585Z"
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "User cerified at timestamp.",
+          "example": "2021-07-20T13:14:39.851Z"
+        },
+        "jwtToken": {
+          "type": "string",
+          "description": "A json web token(jwt).",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        }
+      },
+
+      "refreshTokenResponse": {
+        "jwtToken": {
+          "type": "string",
+          "description": "A json web token(jwt).",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        }
+      }
+    }
+  }
+}

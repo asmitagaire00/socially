@@ -1,3 +1,5 @@
+*.rest
+
 ### Node ###
 # Logs
 logs

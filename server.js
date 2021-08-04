@@ -1,7 +1,16 @@
-const app = require("./src/app");
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
-const PORT = process.env.PORT || 9060;
+const { connectDB } = require('./src/helpers/db');
+const app = require('./src/app');
 
-app.listen(PORT, () => {
-  console.log(`Server started in port ${PORT}.`);
-});
+const PORT = process.env.PORT || 3000;
+
+connectDB()
+  .then(async () => {
+    app.listen(PORT, () => {
+      console.log(`Server started in port ${PORT}.`);
+    });
+  })
+  .catch((error) => {
+    console.error(error);
+  });
