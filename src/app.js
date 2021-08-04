@@ -1,22 +1,36 @@
-const express = require("express");
+const express = require('express');
+
 const app = express();
-const path = require("path");
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
+const globalErrorHandler = require('./middleware/globalErrorHandler');
+const swaggerRouter = require('./api/docs/swagger');
+const accountRouter = require('./api/v1/account/account.controller');
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "dist")));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "hello user." });
-});
+// allow requests from any origin and with credentials
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+  }),
+);
 
-// send index.html file on any route
-app.all("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
-});
+// routes
+app.use('/api/v1/ping', (req, res) =>
+  res.status(200).json({ message: 'Server running.' }),
+);
+
+app.use('/api/v1/account', accountRouter);
+
+// swagger docs
+app.use('/api/v1/api-docs', swaggerRouter);
 
 // global error handler
-app.use((err, req, res, next) => {
-  res.status(500).json({ error: err.message });
-});
+app.use(globalErrorHandler);
 
 module.exports = app;

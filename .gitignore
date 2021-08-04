@@ -1,3 +1,5 @@
+*.rest
+
 ### Node ###
 
 # api test
