@@ -135,8 +135,8 @@ const AuthSlice = createSlice({
       state.loading = false;
       state.errorMessage = payload;
     },
-    [register.fulfilled]: (state, { payload }) => {
-      state.user = payload.data;
+    [register.fulfilled]: (state) => {
+      state.user = null;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
