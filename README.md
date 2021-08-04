@@ -1,3 +1,3 @@
 ## Socially
 
-Be social with your closed ones!
+Be social with your close ones!
