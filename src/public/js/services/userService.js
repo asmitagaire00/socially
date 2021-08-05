@@ -1,76 +1,56 @@
 /* eslint-disable no-use-before-define */
+import axios from 'axios';
 import config from '../config/config';
 
 // eslint-disable-next-line import/prefer-default-export
 export const userService = { register, login, autoLogin, logout, verifyEmail };
 
 async function register(user) {
-  const reqOptions = {
+  return axios({
     method: 'POST',
-    credentials: 'include', // request browser to set the cookie
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(user),
-  };
-
-  return fetch(`${config.apiUrl}/api/v1/account/register`, reqOptions);
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/register`,
+    data: user,
+  });
 }
 
 async function login(email, password) {
-  const reqOptions = {
+  return axios({
     method: 'POST',
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-  };
-
-  return fetch(`${config.apiUrl}/api/v1/account/login`, reqOptions);
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/login`,
+    data: { email, password },
+  });
 }
 
 async function autoLogin(token) {
-  const reqOptions = {
+  return axios({
     method: 'POST',
-    credentials: 'include',
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/auto-login`,
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-  };
-
-  return fetch(`${config.apiUrl}/api/v1/account/auto-login`, reqOptions);
+  });
 }
 
 async function logout(token) {
   // 'refreshToken' cookie is sent
-  const reqOptions = {
+  return axios({
     method: 'POST',
-    credentials: 'include',
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/revoke-token`,
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-  };
-
-  return fetch(`${config.apiUrl}/api/v1/account/revoke-token`, reqOptions);
+  });
 }
 
 async function verifyEmail(emailVerificationToken) {
-  const reqOptions = {
+  return axios({
     method: 'POST',
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ emailVerificationToken }),
-  };
-
-  return fetch(`${config.apiUrl}/api/v1/account/verify-email`, reqOptions);
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/verify-email`,
+    data: { emailVerificationToken },
+  });
 }

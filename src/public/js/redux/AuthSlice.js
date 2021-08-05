@@ -3,7 +3,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { userService } from '../services/userService';
 import { setNotification } from './NotificationSlice';
-import errorDetails from '../config/error';
 
 const initialState = {
   loading: false,
@@ -26,28 +25,23 @@ const register = createAsyncThunk(
         password,
         confirmPassword,
       });
-      const res = await response.json();
-
-      if (!response.ok) {
-        dispatch(
-          setNotification({ message: res.error.message, isError: true }),
-        );
-        return rejectWithValue(res.error.message);
-      }
+      const { data, message } = await response.data;
 
       // send success feedback
-      dispatch(setNotification({ message: res.message, isError: false }));
+      dispatch(setNotification({ message, isError: false }));
 
-      return res;
-    } catch (error) {
+      return data;
+    } catch (err) {
       // log promise rejection error somewhere, display default error message
+      const { message } = err.response.data.error;
+
       dispatch(
         setNotification({
-          message: errorDetails.DEFAULT_ERROR_MSG,
+          message,
           isError: true,
         }),
       );
-      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
+      return rejectWithValue(message);
     }
   },
 );
@@ -57,26 +51,22 @@ const login = createAsyncThunk(
   async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
       const response = await userService.login(email, password);
-      const res = await response.json();
+      const { data } = response.data;
 
-      if (!response.ok) {
-        dispatch(
-          setNotification({ message: res.error.message, isError: true }),
-        );
-        return rejectWithValue(res.error.message);
-      }
+      localStorage.setItem('jwtToken', data.jwtToken);
 
-      localStorage.setItem('jwtToken', res.data.jwtToken);
-      return res;
-    } catch (error) {
+      return data;
+    } catch (err) {
       // log promise rejection error somewhere, display default error message
+      const { message } = err.response.data.error;
+
       dispatch(
         setNotification({
-          message: errorDetails.DEFAULT_ERROR_MSG,
+          message,
           isError: true,
         }),
       );
-      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
+      return rejectWithValue(message);
     }
   },
 );
@@ -86,17 +76,19 @@ const autoLogin = createAsyncThunk(
   async (jwtToken, { rejectWithValue, dispatch }) => {
     try {
       const response = await userService.autoLogin(jwtToken);
-      const res = await response.json();
+      const { data } = await response.data;
 
-      if (!response.ok) {
-        dispatch(setNotification(res.error.message));
-        return rejectWithValue(res.error.message);
-      }
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
 
-      return res;
-    } catch (error) {
-      dispatch(setNotification(errorDetails.DEFAULT_ERROR_MSG));
-      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+      return rejectWithValue(message);
     }
   },
 );
@@ -106,18 +98,21 @@ const logout = createAsyncThunk(
   async (jwtToken, { rejectWithValue, dispatch }) => {
     try {
       const response = await userService.logout(jwtToken);
-      const res = response.json();
-
-      if (!response.ok) {
-        dispatch(setNotification(res.error.message));
-        return rejectWithValue(res.error.message);
-      }
+      const { data } = response.data;
 
       localStorage.removeItem('jwtToken');
-      return res;
-    } catch (error) {
-      dispatch(setNotification(errorDetails.DEFAULT_ERROR_MSG));
-      return rejectWithValue(errorDetails.DEFAULT_ERROR_MSG);
+
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
+
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+      return rejectWithValue(message);
     }
   },
 );
@@ -151,7 +146,7 @@ const AuthSlice = createSlice({
       state.errorMessage = payload;
     },
     [login.fulfilled]: (state, { payload }) => {
-      state.user = payload.data;
+      state.user = payload;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
@@ -167,7 +162,7 @@ const AuthSlice = createSlice({
     },
     [autoLogin.fulfilled]: (state, { payload }) => {
       state.loading = false;
-      state.user = payload.data;
+      state.user = payload;
       state.error = false;
       state.errorMessage = null;
     },
