@@ -15,6 +15,7 @@ import Register from '../Register';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { autoLogin } from '../../redux/AuthSlice';
 import VerifyEmail from '../VerifyEmail';
+import axiosSetup from '../../helpers/axiosSetup';
 
 function AppDashboard() {
   return (
@@ -34,6 +35,9 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // setup axios interceptors
+    axiosSetup();
+
     const jwtToken = localStorage.getItem('jwtToken');
     if (!user && jwtToken) dispatch(autoLogin(jwtToken));
   }, []);

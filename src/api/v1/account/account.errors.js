@@ -36,6 +36,6 @@ module.exports = {
     type: ApplicationError.type.SOCIALLY,
     code: 'INVALID_REFRESH_TOKEN',
     message: 'Invalid refresh token or token not found!',
-    statusCode: 400,
+    statusCode: 401,
   },
 };
