@@ -3,7 +3,14 @@ import axios from 'axios';
 import config from '../config/config';
 
 // eslint-disable-next-line import/prefer-default-export
-export const userService = { register, login, autoLogin, logout, verifyEmail };
+export const userService = {
+  register,
+  login,
+  autoLogin,
+  logout,
+  verifyEmail,
+  refreshToken,
+};
 
 async function register(user) {
   return axios({
@@ -52,5 +59,13 @@ async function verifyEmail(emailVerificationToken) {
     withCredentials: true, // request browser to set the cookie
     url: `${config.apiUrl}/api/v1/account/verify-email`,
     data: { emailVerificationToken },
+  });
+}
+
+async function refreshToken() {
+  return axios({
+    method: 'POST',
+    withCredentials: true, // request browser to set the cookie
+    url: `${config.apiUrl}/api/v1/account/refresh-token`,
   });
 }

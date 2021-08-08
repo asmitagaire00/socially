@@ -25,7 +25,7 @@ const register = createAsyncThunk(
         password,
         confirmPassword,
       });
-      const { data, message } = await response.data;
+      const { data, message } = response.data;
 
       // send success feedback
       dispatch(setNotification({ message, isError: false }));
@@ -73,7 +73,7 @@ const login = createAsyncThunk(
 
 const autoLogin = createAsyncThunk(
   'auth/autoLogin',
-  async (jwtToken, { rejectWithValue, dispatch }) => {
+  async (jwtToken, { rejectWithValue }) => {
     try {
       const response = await userService.autoLogin(jwtToken);
       const { data } = await response.data;
@@ -82,12 +82,6 @@ const autoLogin = createAsyncThunk(
     } catch (err) {
       const { message } = err.response.data.error;
 
-      dispatch(
-        setNotification({
-          message,
-          isError: true,
-        }),
-      );
       return rejectWithValue(message);
     }
   },
