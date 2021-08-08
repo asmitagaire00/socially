@@ -12,6 +12,16 @@ const schema = new Schema({
   createdAt: { type: Date, default: Date.now },
   passwordReset: Date,
   updatedAt: Date,
+  profileImage: String,
+  coverImage: String,
+  isOnline: { type: Boolean, default: false },
+  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+  likes: [{ type: Schema.Types.ObjectId, ref: 'Like' }],
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+  followers: [{ type: Schema.Types.ObjectId, ref: 'Follow' }],
+  following: [{ type: Schema.Types.ObjectId, ref: 'Follow' }],
+  // messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
+  // notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }],
 });
 
 // eslint-disable-next-line func-names
