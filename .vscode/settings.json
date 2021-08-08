@@ -1,3 +1,4 @@
 {
-  "eslint.alwaysShowStatus": true
+  "eslint.alwaysShowStatus": true,
+  "editor.tabSize": 2
 }
