@@ -63,7 +63,6 @@ function refreshToken(req, res, next) {
     !req.hasOwnProperty('cookies') &&
     !req.cookies.hasOwnProperty('refreshToken')
   ) {
-    // eslint-disable-next-line no-throw-literal
     throw new ApplicationError(AccountError.INVALID_REFRESH_TOKEN);
   }
 
