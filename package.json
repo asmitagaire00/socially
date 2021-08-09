@@ -9,7 +9,7 @@
     "webpack-dev-server": "webpack serve --mode=development --progress",
     "webpack:watch": "npx webpack --watch --mode=development",
     "build": "webpack --mode=production",
-    "test": "NODE_ENV=test jest -i --colors --verbose --detectOpenHandles",
+    "test": "NODE_ENV=test jest -i --colors --verbose",
     "test:watch": "NODE_ENV=test jest -i --colors --verbose --watchAll",
     "coverage": "jest -i --coverage",
     "lint": "eslint .",
@@ -71,6 +71,7 @@
     "postcss-import": "^14.0.2",
     "postcss-loader": "^6.1.0",
     "style-loader": "^2.0.0",
+    "supertest": "^6.1.4",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
