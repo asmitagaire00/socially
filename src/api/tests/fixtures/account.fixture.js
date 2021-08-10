@@ -3,10 +3,14 @@ const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const faker = require('faker');
+const db = require('../../../helpers/db');
+const { generateJwtToken } = require('../../v1/account/account.utils');
 
 module.exports = {
   userOne,
   userTwo,
+  userOneJwtToken,
+  createUsers,
 };
 
 const password = 'somePassword1';
@@ -14,7 +18,7 @@ const salt = bcryptjs.genSaltSync(10);
 const passwordHash = bcryptjs.hashSync(password, salt);
 
 const userOne = {
-  id: mongoose.Types.ObjectId(),
+  _id: mongoose.Types.ObjectId(),
   email: faker.internet.email().toLowerCase(),
   passwordHash,
   firstName: faker.name.findName(),
@@ -22,9 +26,15 @@ const userOne = {
 };
 
 const userTwo = {
-  id: mongoose.Types.ObjectId(),
+  _id: mongoose.Types.ObjectId(),
   email: faker.internet.email().toLowerCase(),
   passwordHash,
   firstName: faker.name.findName(),
   lastName: faker.name.findName(),
 };
+
+const userOneJwtToken = generateJwtToken(userOne);
+
+async function createUsers(users) {
+  users.map((user) => new db.Account(user));
+}
