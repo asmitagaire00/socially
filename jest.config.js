@@ -14,6 +14,7 @@ module.exports = {
       testEnvironment: 'jsdom',
       testMatch: ['**/src/public/**/?(*.)+(spec|test).js'],
       moduleFileExtensions: ['js', 'json'],
+      restoreMocks: true,
       coveragePathIgnorePatterns: ['./node_modules'],
       coverageReporters: ['text', 'lcov', 'clover', 'html'],
     },
