@@ -17,9 +17,7 @@ const setupTestDB = () => {
     );
   });
 
-  afterAll(async () => {
-    await mongoose.disconnect();
-  });
+  afterAll(() => mongoose.disconnect());
 };
 
 module.exports = setupTestDB;
