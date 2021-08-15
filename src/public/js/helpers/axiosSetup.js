@@ -22,11 +22,14 @@ export default function axiosSetup() {
       const originalRequest = error.config;
       if (
         error.response &&
+        error.response.data.error.code === 'INVALID_REFRESH_TOKEN' &&
         error.response.status === 401 &&
         error.config &&
         !error.config._retry
       ) {
         originalRequest._retry = true;
+
+        console.log('err res', error.response);
 
         return userService
           .refreshToken()
