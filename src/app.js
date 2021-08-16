@@ -8,6 +8,7 @@ const globalErrorHandler = require('./middleware/globalErrorHandler');
 const swaggerRouter = require('./api/docs/swagger');
 const accountRouter = require('./api/v1/account/account.controller');
 const userRouter = require('./api/v1/user/user.controller');
+const postRouter = require('./api/v1/post/post.controller');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +28,7 @@ app.use('/api/v1/ping', (req, res) =>
 );
 app.use('/api/v1/account', accountRouter);
 app.use('/api/v1/user/', userRouter);
+app.use('/api/v1/post/', postRouter);
 
 // swagger docs
 app.use('/api/v1/api-docs', swaggerRouter);
