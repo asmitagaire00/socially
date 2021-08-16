@@ -10,7 +10,7 @@ const password = 'somePassword1';
 const salt = bcryptjs.genSaltSync(10);
 const passwordHash = bcryptjs.hashSync(password, salt);
 
-const userOne = {
+const accountOne = {
   _id: mongoose.Types.ObjectId(),
   email: faker.internet.email().toLowerCase(),
   passwordHash,
@@ -18,7 +18,7 @@ const userOne = {
   lastName: faker.name.findName(),
 };
 
-const userTwo = {
+const accountTwo = {
   _id: mongoose.Types.ObjectId(),
   email: faker.internet.email().toLowerCase(),
   passwordHash,
@@ -26,15 +26,15 @@ const userTwo = {
   lastName: faker.name.findName(),
 };
 
-const userOneJwtToken = generateJwtToken(userOne);
+const accountOneJwtToken = generateJwtToken(accountOne);
 
-async function createUsers(users) {
-  await db.Account.insertMany(users);
+async function createAccounts(accounts) {
+  await db.Account.insertMany(accounts);
 }
 
 module.exports = {
-  userOne,
-  userTwo,
-  userOneJwtToken,
-  createUsers,
+  accountOne,
+  accountTwo,
+  accountOneJwtToken,
+  createAccounts,
 };

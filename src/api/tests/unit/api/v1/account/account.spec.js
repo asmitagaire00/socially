@@ -9,11 +9,11 @@ const {
 
 describe('account validation using joi schema', () => {
   describe('contains register schema', () => {
-    let newUser;
+    let newAccount;
     const password = 'somePassword1';
 
     beforeEach(() => {
-      newUser = {
+      newAccount = {
         firstName: faker.name.findName(),
         lastName: faker.name.findName(),
         email: faker.internet.email().toLowerCase(),
@@ -23,7 +23,7 @@ describe('account validation using joi schema', () => {
     });
 
     it('should correctly validate a valid user', () => {
-      const req = mockRequest(newUser);
+      const req = mockRequest(newAccount);
       const res = mockResponse();
       const next = mockNext();
 
@@ -35,9 +35,9 @@ describe('account validation using joi schema', () => {
     });
 
     it('should throw a joi validation error if email is invalid', () => {
-      newUser.email = 'invalidEmail';
+      newAccount.email = 'invalidEmail';
 
-      const req = mockRequest(newUser);
+      const req = mockRequest(newAccount);
       const res = mockResponse();
       const next = mockNext();
 

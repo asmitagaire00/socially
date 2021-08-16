@@ -5,8 +5,8 @@ const app = require('../../../../../../app');
 const setupTestDB = require('../../../../utils/setupTestDB');
 const db = require('../../../../../../helpers/db');
 const {
-  userOne,
-  createUsers,
+  accountOne,
+  createAccounts,
 } = require('../../../../fixtures/account.fixture');
 
 // setup test database and teardown processes
@@ -23,11 +23,11 @@ describe('Socially server', () => {
 });
 
 describe('Account routes', () => {
-  let newUser;
+  let newAccount;
   const password = 'somePassword1';
 
   beforeEach(() => {
-    newUser = {
+    newAccount = {
       firstName: faker.name.findName(),
       lastName: faker.name.findName(),
       email: faker.internet.email().toLowerCase(),
@@ -36,11 +36,18 @@ describe('Account routes', () => {
     };
   });
 
+  it('should create accounts when createAccounts([,]) function is called', async () => {
+    await createAccounts([accountOne]);
+
+    const dbUser = await db.Account.findOne({ email: accountOne.email });
+    expect(dbUser).toBeDefined();
+  });
+
   describe('POST /account/register', () => {
     it('should return 200 ok and successfully create new user account if data is valid', async () => {
       const res = await supertest(app)
         .post('/api/v1/account/register')
-        .send(newUser)
+        .send(newAccount)
         .expect(200);
 
       expect(res.body).toEqual({
@@ -49,17 +56,17 @@ describe('Account routes', () => {
         success: true,
       });
 
-      const dbUser = await db.Account.findOne({ email: newUser.email });
+      const dbUser = await db.Account.findOne({ email: newAccount.email });
       expect(dbUser).toBeDefined();
-      expect(dbUser.passwordHash).not.toBe(newUser.password);
+      expect(dbUser.passwordHash).not.toBe(newAccount.password);
     });
 
     it('should return 400 bad request when email in invalid', async () => {
-      newUser.email = 'invalid email';
+      newAccount.email = 'invalid email';
 
       const res = await supertest(app)
         .post('/api/v1/account/register')
-        .send(newUser)
+        .send(newAccount)
         .expect(400);
 
       expect(res.body).toMatchObject({
@@ -72,13 +79,13 @@ describe('Account routes', () => {
     });
 
     it('should return 400 bad request when email is already taken', async () => {
-      await createUsers([userOne]);
+      await createAccounts([accountOne]);
 
-      newUser.email = userOne.email;
+      newAccount.email = accountOne.email;
 
       const res = await supertest(app)
         .post('/api/v1/account/register')
-        .send(newUser)
+        .send(newAccount)
         .expect(400);
 
       expect(res.body).toMatchObject({
@@ -93,11 +100,11 @@ describe('Account routes', () => {
     });
 
     it('should return 400 bad request when password length is less than 6 characters', async () => {
-      newUser.password = 'four';
+      newAccount.password = 'four';
 
       const res = await supertest(app)
         .post('/api/v1/account/register')
-        .send(newUser)
+        .send(newAccount)
         .expect(400);
 
       expect(res.body).toMatchObject({
