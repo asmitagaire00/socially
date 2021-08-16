@@ -6,6 +6,7 @@ const schema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     image: String,
+    imagePublicId: String,
     caption: String,
     location: String,
     url: String,
