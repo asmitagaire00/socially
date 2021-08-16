@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-throw-literal */
 /* eslint-disable no-use-before-define */
 const bcryptjs = require('bcryptjs');
@@ -46,8 +47,12 @@ async function register(userData, origin) {
   newAccount.passwordHash = passwordHash;
   newAccount.emailVerificationToken = utils.generateRandomToken();
 
-  await newAccount.save();
+  const newUser = new db.User({ account: newAccount._id });
+  newAccount.user = newUser._id;
+  newUser.account = newAccount._id;
 
+  await newUser.save();
+  await newAccount.save();
   await utils.sendVerificationEmail(newAccount, origin);
 }
 
@@ -86,6 +91,7 @@ async function authenticate(userData, origin) {
     email: _email,
     createdAt,
     verifiedAt,
+    user,
   } = account;
 
   return {
@@ -96,6 +102,7 @@ async function authenticate(userData, origin) {
     createdAt,
     verifiedAt,
     jwtToken,
+    user,
     refreshToken: refreshToken.token,
   };
 }

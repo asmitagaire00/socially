@@ -4,12 +4,12 @@ const { Schema } = mongoose;
 
 const schema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'Account' },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
     image: String,
     caption: String,
     location: String,
     url: String,
-    tags: [{ type: Schema.Types.ObjectId, ref: 'Account' }],
+    tags: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     likes: [{ type: Schema.Types.ObjectId, ref: 'Like' }],
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   },

@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 const schema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'Account' },
-    follower: { type: Schema.Types.ObjectId, ref: 'Account' },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    follower: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true },
 );
