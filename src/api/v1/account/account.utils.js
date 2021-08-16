@@ -53,9 +53,13 @@ function generateRandomToken() {
 }
 
 function generateJwtToken(account) {
-  return jwt.sign({ sub: account.id, id: account.id }, process.env.SECRET_JWT, {
-    expiresIn: '10m',
-  });
+  return jwt.sign(
+    { sub: account.id, id: account.id, user: account.user },
+    process.env.SECRET_JWT,
+    {
+      expiresIn: '10m',
+    },
+  );
 }
 
 function generateRefreshToken(account) {
