@@ -6,13 +6,6 @@ const faker = require('faker');
 const db = require('../../../helpers/db');
 const { generateJwtToken } = require('../../v1/account/account.utils');
 
-module.exports = {
-  userOne,
-  userTwo,
-  userOneJwtToken,
-  createUsers,
-};
-
 const password = 'somePassword1';
 const salt = bcryptjs.genSaltSync(10);
 const passwordHash = bcryptjs.hashSync(password, salt);
@@ -36,5 +29,12 @@ const userTwo = {
 const userOneJwtToken = generateJwtToken(userOne);
 
 async function createUsers(users) {
-  users.map((user) => new db.Account(user));
+  await db.Account.insertMany(users);
 }
+
+module.exports = {
+  userOne,
+  userTwo,
+  userOneJwtToken,
+  createUsers,
+};
