@@ -38,13 +38,14 @@ function authorize() {
       );
     }
 
-    const user = await db.Account.findById(decodedToken.id);
-
-    const refreshTokens = await db.RefreshToken.find({ account: user.id });
+    const account = await db.Account.findById(decodedToken.id);
+    const user = await db.User.findById(decodedToken.user);
+    const refreshTokens = await db.RefreshToken.find({ account: account.id });
 
     // attach user obj to the request
+    req.account = account;
     req.user = user;
-    req.user.ownsToken = (_token) =>
+    req.account.ownsToken = (_token) =>
       !!refreshTokens.find((x) => x.token === _token);
     next();
   };

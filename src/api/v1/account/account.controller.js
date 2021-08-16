@@ -81,7 +81,7 @@ function refreshToken(req, res, next) {
 function revokeToken(req, res, next) {
   const token = req.body.refreshToken || req.cookies.refreshToken;
 
-  if (!token || !req.user.ownsToken(token)) {
+  if (!token || !req.account.ownsToken(token)) {
     throw new ApplicationError(AccountError.INVALID_REFRESH_TOKEN);
   }
 
