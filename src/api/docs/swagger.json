@@ -440,7 +440,7 @@
               }
             }
           },
-          "400": {
+          "401": {
             "description": "Token revoke operation failed.",
             "content": {
               "application/json": {
@@ -461,7 +461,7 @@
                     "type": "SOCIALLY",
                     "code": "INVALID_REFRESH_TOKEN",
                     "message": "Invalid refresh token or token not found!",
-                    "statusCode": 400
+                    "statusCode": 401
                   },
                   "success": false
                 }

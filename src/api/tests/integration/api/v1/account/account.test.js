@@ -3,6 +3,7 @@ const faker = require('faker');
 
 const app = require('../../../../../../app');
 const setupTestDB = require('../../../../utils/setupTestDB');
+const extractCookies = require('../../../../utils/extractCookies');
 const db = require('../../../../../../helpers/db');
 const {
   accountOne,
@@ -186,6 +187,159 @@ describe('Account routes', () => {
           statusCode: 400,
         },
         success: false,
+      });
+    });
+  });
+
+  describe('POST /account/refresh-token', () => {
+    it('should return 200 ok if tokens were successfully refreshed', async () => {
+      await createAccounts([accountVerifiedOne]);
+      const body = {
+        email: accountVerifiedOne.email,
+        password: accountPassword,
+      };
+      const res1 = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(200);
+
+      const { refreshToken } = extractCookies(res1.headers);
+
+      const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
+
+      const res = await supertest(app)
+        .post('/api/v1/account/refresh-token')
+        .set('Cookie', [refTokenCookie])
+        .expect(200);
+
+      const { refreshToken: newRefreshToken } = extractCookies(res.headers);
+
+      expect(newRefreshToken.value).not.toBe(refreshToken.value);
+      expect(res.body).toEqual({
+        data: {
+          jwtToken: expect.anything(),
+        },
+        message: expect.anything(),
+        success: true,
+      });
+    });
+
+    it('should return 401 unauthorized if tokens were unable to be refreshed due to invalid refresh token', async () => {
+      const invalidRefToken = 'refreshToken=foo';
+      const res = await supertest(app)
+        .post('/api/v1/account/refresh-token')
+        .set('Cookie', [invalidRefToken])
+        .expect(401);
+
+      expect(res.body).toEqual({
+        error: {
+          name: 'ApplicationError',
+          type: 'SOCIALLY',
+          code: 'INVALID_REFRESH_TOKEN',
+          message: expect.anything(),
+          statusCode: 401,
+        },
+        success: false,
+      });
+    });
+  });
+
+  describe('POST /account/revoke-token', () => {
+    it('should return 200 ok if token is revoked', async () => {
+      await createAccounts([accountVerifiedOne]);
+      const body = {
+        email: accountVerifiedOne.email,
+        password: accountPassword,
+      };
+      const res1 = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(200);
+
+      const { refreshToken } = extractCookies(res1.headers);
+      const { jwtToken } = res1.body.data;
+
+      const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
+
+      const res = await supertest(app)
+        .post('/api/v1/account/revoke-token')
+        .set('Authorization', `Bearer ${jwtToken}`)
+        .set('Cookie', [refTokenCookie])
+        .send({
+          refreshToken: refreshToken.value,
+        })
+        .expect(200);
+
+      expect(res.body).toEqual({
+        data: null,
+        message: expect.anything(),
+        success: true,
+      });
+    });
+
+    it('should return 401 unauthorized if token was unable to be revoked due to invalid jwtToken', async () => {
+      await createAccounts([accountVerifiedOne]);
+      const body = {
+        email: accountVerifiedOne.email,
+        password: accountPassword,
+      };
+      const res1 = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(200);
+
+      const { refreshToken } = extractCookies(res1.headers);
+      const { jwtToken } = res1.body.data;
+
+      const res = await supertest(app)
+        .post('/api/v1/account/revoke-token')
+        .set('Authorization', `Bearer ${jwtToken}`)
+        .send({
+          refreshToken: `${refreshToken.value}foo`,
+        })
+        .expect(401);
+
+      expect(res.body).toEqual({
+        error: {
+          name: 'ApplicationError',
+          type: 'SOCIALLY',
+          code: 'INVALID_REFRESH_TOKEN',
+          message: expect.anything(),
+          statusCode: 401,
+        },
+        success: false,
+      });
+    });
+  });
+
+  describe('POST /account/auto-login', () => {
+    it('should return 200 ok  if auto login using just jwt token was successful', async () => {
+      await createAccounts([accountVerifiedOne]);
+
+      const body = {
+        email: accountVerifiedOne.email,
+        password: accountPassword,
+      };
+      const res1 = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(200);
+
+      const { refreshToken } = extractCookies(res1.headers);
+      const { jwtToken } = res1.body.data;
+
+      const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
+
+      const res = await supertest(app)
+        .post('/api/v1/account/auto-login')
+        .set('Authorization', `Bearer ${jwtToken}`)
+        .set('Cookie', [refTokenCookie])
+        .expect(200);
+
+      expect(res.body).toEqual({
+        data: null,
+        message: expect.anything(),
+        success: true,
       });
     });
   });
