@@ -17,7 +17,14 @@ const setupTestDB = () => {
     );
   });
 
-  afterAll(() => mongoose.disconnect());
+  afterAll(async () => {
+    await Promise.all(
+      Object.values(mongoose.connection.collections).map(async (collection) =>
+        collection.deleteMany(),
+      ),
+    );
+    return mongoose.disconnect();
+  });
 };
 
 module.exports = setupTestDB;
