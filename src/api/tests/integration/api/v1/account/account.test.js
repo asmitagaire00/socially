@@ -6,7 +6,9 @@ const setupTestDB = require('../../../../utils/setupTestDB');
 const db = require('../../../../../../helpers/db');
 const {
   accountOne,
+  accountVerifiedOne,
   createAccounts,
+  accountPassword,
 } = require('../../../../fixtures/account.fixture');
 
 // setup test database and teardown processes
@@ -130,6 +132,57 @@ describe('Account routes', () => {
         error: {
           name: 'ApplicationError',
           code: 'VALIDATION_ERROR',
+          statusCode: 400,
+        },
+        success: false,
+      });
+    });
+  });
+
+  describe('POST /account/login', () => {
+    it('should return 200 ok if email and password is valid and match', async () => {
+      await createAccounts([accountVerifiedOne]);
+      const body = {
+        email: accountVerifiedOne.email,
+        password: accountPassword,
+      };
+      const res = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(200);
+
+      expect(res.body).toEqual({
+        data: {
+          id: expect.anything(),
+          firstName: accountVerifiedOne.firstName,
+          lastName: accountVerifiedOne.lastName,
+          email: accountVerifiedOne.email,
+          createdAt: expect.anything(),
+          verifiedAt: expect.anything(),
+          jwtToken: expect.anything(),
+        },
+        message: expect.anything(),
+        success: true,
+      });
+    });
+
+    it('should return 400 bad request if email and password does not match', async () => {
+      await createAccounts([accountVerifiedOne]);
+      const body = {
+        email: accountVerifiedOne.email,
+        password: 'wrongpassword',
+      };
+      const res = await supertest(app)
+        .post('/api/v1/account/login')
+        .send(body)
+        .expect(400);
+
+      expect(res.body).toEqual({
+        error: {
+          name: 'ApplicationError',
+          type: 'SOCIALLY',
+          code: 'INCORRECT_CREDENTIALS',
+          message: expect.anything(),
           statusCode: 400,
         },
         success: false,

@@ -6,9 +6,9 @@ const faker = require('faker');
 const db = require('../../../helpers/db');
 const { generateJwtToken } = require('../../v1/account/account.utils');
 
-const password = 'somePassword1';
+const accountPassword = 'teslaa';
 const salt = bcryptjs.genSaltSync(10);
-const passwordHash = bcryptjs.hashSync(password, salt);
+const passwordHash = bcryptjs.hashSync(accountPassword, salt);
 
 const accountOne = {
   _id: mongoose.Types.ObjectId(),
@@ -26,6 +26,26 @@ const accountTwo = {
   lastName: faker.name.findName(),
 };
 
+const accountVerifiedOne = {
+  _id: mongoose.Types.ObjectId(),
+  firstName: 'ggggg',
+  lastName: 'ggggg',
+  email: 'ggg@gmail.com',
+  passwordHash,
+  createdAt: '2021-08-15T07:18:57.178+00:00',
+  verifiedAt: '2021-08-15T07:19:23.424+00:00',
+};
+
+const accountVerifiedTwo = {
+  _id: mongoose.Types.ObjectId(),
+  firstName: 'hhhhh',
+  lastName: 'hhhhh',
+  email: 'hhh@gmail.com',
+  passwordHash,
+  createdAt: '2021-08-13T07:18:57.178+00:00',
+  verifiedAt: '2021-08-13T07:19:23.424+00:00',
+};
+
 const accountOneJwtToken = generateJwtToken(accountOne);
 
 async function createAccounts(accounts) {
@@ -35,6 +55,9 @@ async function createAccounts(accounts) {
 module.exports = {
   accountOne,
   accountTwo,
+  accountVerifiedOne,
+  accountVerifiedTwo,
+  accountPassword,
   accountOneJwtToken,
   createAccounts,
 };
