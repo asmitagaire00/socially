@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-use-before-define */
 const crypto = require('crypto');
 const bcryptjs = require('bcryptjs');
@@ -54,7 +55,11 @@ function generateRandomToken() {
 
 function generateJwtToken(account) {
   return jwt.sign(
-    { sub: account.id, id: account.id, user: account.user },
+    {
+      sub: account.id || account._id,
+      id: account.id || account._id,
+      user: account.user,
+    },
     process.env.SECRET_JWT,
     {
       expiresIn: '10m',
@@ -64,7 +69,7 @@ function generateJwtToken(account) {
 
 function generateRefreshToken(account) {
   return new db.RefreshToken({
-    account: account.id,
+    account: account.id || account._id,
     token: generateRandomToken(),
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
   });
