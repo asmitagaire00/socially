@@ -161,6 +161,7 @@ describe('Account routes', () => {
           createdAt: expect.anything(),
           verifiedAt: expect.anything(),
           jwtToken: expect.anything(),
+          user: expect.anything(),
         },
         message: expect.anything(),
         success: true,
