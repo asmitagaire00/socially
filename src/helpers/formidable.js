@@ -6,15 +6,18 @@ module.exports = { parseMultiFormData };
 function parseMultiFormData(req, res, next) {
   const form = formidable();
 
+  req.body.user = req.user.id.toString();
+
   form.parse(req, (err, fields, file) => {
     if (err) {
       console.log('Error while parsing file: ', err);
-      return next(err);
+      next(err);
+      return;
     }
-    req.body.image = file.image.path; // get image path
-    req.body.caption = fields.caption;
-    // eslint-disable-next-line no-underscore-dangle
-    req.body.user = req.user._id.toString();
+    req.body.image = file.image ? file.image.path : undefined; // get image path
+    req.body.caption = fields.caption || undefined;
+    // eslint-disable-next-line consistent-return
     return next();
   });
+  next();
 }
