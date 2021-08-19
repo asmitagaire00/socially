@@ -17,6 +17,7 @@ const accountOne = {
   firstName: faker.name.findName(),
   lastName: faker.name.findName(),
 };
+const accountOneJwtToken = generateJwtToken(accountOne);
 
 const accountTwo = {
   _id: mongoose.Types.ObjectId(),
@@ -46,10 +47,22 @@ const accountVerifiedTwo = {
   verifiedAt: '2021-08-13T07:19:23.424+00:00',
 };
 
-const accountOneJwtToken = generateJwtToken(accountOne);
-
+// creates accounts and respective users
+// returns accounts array of objects, each object: {account, jwtToken}
 async function createAccounts(accounts) {
-  await db.Account.insertMany(accounts);
+  const accPromises = accounts.map(async (account) => {
+    const user = new db.User();
+    // eslint-disable-next-line no-param-reassign
+    account.user = user.id;
+    user.account = account.id;
+    await user.save();
+    return { account, jwtToken: generateJwtToken(account) };
+  });
+
+  const newAccounts = await Promise.all(accPromises);
+
+  await db.Account.insertMany(newAccounts.map((account) => account.account));
+  return newAccounts;
 }
 
 module.exports = {
