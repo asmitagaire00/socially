@@ -23,7 +23,7 @@ router.post('/auto-login', authorize(), autoLogin);
 module.exports = router;
 
 function autoLogin(req, res) {
-  sendResponse(res, req.user, '');
+  sendResponse(res, null, '');
 }
 
 function register(req, res, next) {
