@@ -17,6 +17,8 @@ module.exports = { createPost };
  */
 async function createPost(postDetails) {
   const { caption, image, user } = postDetails;
+  let imageUrl;
+  let imagePublicId;
 
   if (!caption && !image) {
     throw new ApplicationError(CommonError.BAD_REQUEST, {
@@ -25,17 +27,14 @@ async function createPost(postDetails) {
   }
 
   // upload image to cloudinary
-  let res;
   if (image) {
-    res = await uploadSingleImageToCloudinary(image, 'posts');
-    console.log('Cloud response: ', res);
+    const res = await uploadSingleImageToCloudinary(image, 'posts');
     if (!res.secure_url) {
       throw new ApplicationError(PostError.IMAGE_UPLOAD_CLOUDINARY_FAILED);
     }
+    imageUrl = res.secure_url;
+    imagePublicId = res.public_id;
   }
-
-  const imageUrl = res.secure_url;
-  const imagePublicId = res.public_id;
 
   const newPost = new db.Post({
     ...postDetails,
