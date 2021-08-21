@@ -11,13 +11,11 @@ function parseMultiFormData(req, res, next) {
   form.parse(req, (err, fields, file) => {
     if (err) {
       console.log('Error while parsing file: ', err);
-      next(err);
-      return;
+      return next(err);
     }
     req.body.image = file.image ? file.image.path : undefined; // get image path
     req.body.caption = fields.caption || undefined;
     // eslint-disable-next-line consistent-return
     return next();
   });
-  next();
 }
