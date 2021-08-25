@@ -8,11 +8,11 @@ const {
 } = require('../../../helpers/cloudinary');
 
 // eslint-disable-next-line no-use-before-define
-module.exports = { createPost };
+module.exports = { createPost, getPost, getPosts, getFollowedPosts };
 
 /**
  * Create a post
- * @param {*} postDetails post info object
+ * @param {object} postDetails post info object
  * @returns a new post
  */
 async function createPost(postDetails) {
@@ -49,4 +49,68 @@ async function createPost(postDetails) {
   );
 
   return newPost;
+}
+
+async function getPost(postId) {
+  const post = await db.Post.findById(postId)
+    .populate('likes')
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: 'desc' } },
+      populate: { path: 'user' },
+    });
+
+  return post;
+}
+
+/**
+ * Get all posts of a user
+ * @param {string} userId user id
+ * @param {int} skip how many posts to skip
+ * @param {int} limit how many posts to limit
+ * @returns an object containing posts and count
+ */
+async function getPosts(userId, skip, limit) {
+  const allPostsCount = await db.Post.find({ user: userId }).countDocuments();
+  const allPosts = await db.Post.find({ user: userId })
+    .populate('likes')
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: 'desc' } },
+      populate: { path: 'user' },
+    })
+    .sort({ createdAt: 'desc' })
+    .skip(skip)
+    .limit(limit);
+
+  return { posts: allPosts, count: allPostsCount };
+}
+
+/**
+ * Get the posts followed by user(including the user posts as well)
+ * @param {string} userId user id
+ * @param {int} skip how many posts to skip
+ * @param {int} limit how many posts to limit
+ * @returns an object containing posts and count
+ */
+async function getFollowedPosts(userId, skip, limit) {
+  const followingList = [];
+  const followings = await db.Follow.find({ follower: userId }).select('user');
+  followings.map((following) => followingList.push(following));
+
+  const query = { $or: [{ user: { $in: followingList } }, { user: userId }] };
+
+  const followedPostsCount = await db.Post.find(query).countDocuments();
+  const followedPosts = await db.Post.find(query)
+    .populate('likes')
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: 'desc' } },
+      populate: { path: 'user' },
+    })
+    .sort({ createdAt: 'desc' })
+    .skip(skip)
+    .limit(limit);
+
+  return { posts: followedPosts, count: followedPostsCount };
 }
