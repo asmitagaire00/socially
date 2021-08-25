@@ -4,7 +4,7 @@ const formidable = require('formidable');
 module.exports = { parseMultiFormData };
 
 function parseMultiFormData(req, res, next) {
-  const form = formidable();
+  const form = new formidable.IncomingForm();
 
   req.body.user = req.user.id.toString();
 
