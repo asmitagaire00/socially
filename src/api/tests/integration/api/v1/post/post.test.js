@@ -29,7 +29,8 @@ describe('Post routes', () => {
       const res = await supertest(app)
         .post('/api/v1/post/create')
         .set('Authorization', `Bearer ${bearerTokenOne}`)
-        .send(newPost)
+        .set('Content-type', 'multipart/form-data')
+        .field({ caption: newPost.caption })
         .expect(200);
 
       expect(res.body).toEqual({
@@ -38,7 +39,6 @@ describe('Post routes', () => {
           likes: expect.anything(),
           comments: expect.anything(),
           caption: expect.anything(),
-          user: expect.anything(),
           createdAt: expect.anything(),
           updatedAt: expect.anything(),
           id: expect.anything(),
