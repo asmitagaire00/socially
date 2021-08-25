@@ -9,7 +9,6 @@ function createPostSchema(req, res, next) {
   const schema = Joi.object({
     image: Joi.any(),
     caption: Joi.string(),
-    user: Joi.string().required(),
   }).or('image', 'caption');
 
   validateRequest(req, next, schema);

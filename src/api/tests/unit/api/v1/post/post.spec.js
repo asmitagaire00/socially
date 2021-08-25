@@ -30,25 +30,6 @@ describe('post validation using joi schema', () => {
       expect(next).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw a joi validation error if the post contains no user id', () => {
-      newPost.user = undefined;
-
-      const req = mockRequest(newPost);
-      const res = mockResponse();
-      const next = mockNext();
-
-      postValidation.createPostSchema(req, res, next);
-
-      expect(next).toHaveBeenCalled();
-      expect(next).toHaveBeenCalledTimes(1);
-
-      expect(next).toBeCalledWith(
-        expect.objectContaining({
-          code: 'VALIDATION_ERROR',
-        }),
-      );
-    });
-
     it('should throw a joi validation error if the post contains no image url and caption both', () => {
       newPost.image = undefined;
       newPost.caption = undefined;
