@@ -8,6 +8,8 @@ const swaggerRouter = require('./api/docs/swagger');
 const accountRouter = require('./api/v1/account/account.controller');
 const userRouter = require('./api/v1/user/user.controller');
 const postRouter = require('./api/v1/post/post.controller');
+const likeRouter = require('./api/v1/like/like.controller');
+const commentRouter = require('./api/v1/comment/comment.controller');
 
 const app = express();
 
@@ -29,8 +31,10 @@ app.use('/api/v1/ping', (req, res) =>
   res.status(200).json({ message: 'Server running.' }),
 );
 app.use('/api/v1/account', accountRouter);
-app.use('/api/v1/user/', userRouter);
-app.use('/api/v1/post/', postRouter);
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/post', postRouter);
+app.use('/api/v1/like', likeRouter);
+app.use('/api/v1/comment', commentRouter);
 app.use('/api/v1/api-docs', swaggerRouter);
 
 app.all('*', (req, res) => {
