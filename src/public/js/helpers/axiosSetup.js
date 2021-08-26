@@ -10,6 +10,7 @@ export default function axiosSetup() {
       if (token) {
         // eslint-disable-next-line no-param-reassign
         conf.headers.Authorization = `Bearer ${token}`;
+        conf.withCredentials = true;
       }
       return conf;
     },
@@ -20,6 +21,8 @@ export default function axiosSetup() {
     (response) => response,
     (error) => {
       const originalRequest = error.config;
+
+      // try to refresh token if it is invalid
       if (
         error.response &&
         error.response.data.error.code === 'INVALID_REFRESH_TOKEN' &&
@@ -28,8 +31,6 @@ export default function axiosSetup() {
         !error.config._retry
       ) {
         originalRequest._retry = true;
-
-        console.log('err res', error.response);
 
         return userService
           .refreshToken()
