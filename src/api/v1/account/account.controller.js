@@ -23,7 +23,7 @@ router.post('/auto-login', authorize(), autoLogin);
 module.exports = router;
 
 function autoLogin(req, res) {
-  sendResponse(res, null, '');
+  sendResponse(res, req.account, '');
 }
 
 function register(req, res, next) {
@@ -82,7 +82,7 @@ function revokeToken(req, res, next) {
   const token = req.body.refreshToken || req.cookies.refreshToken;
 
   if (!token || !req.account.ownsToken(token)) {
-    throw new ApplicationError(AccountError.INVALID_REFRESH_TOKEN);
+    throw new ApplicationError(AccountError.REFRESH_TOKEN_NOT_FOUND);
   }
 
   accountService

@@ -156,8 +156,6 @@ async function refreshToken(token) {
  */
 async function revokeToken(token) {
   const refToken = await db.RefreshToken.findOne({ token }).populate('account');
-  if (!refToken || !refToken.isValid)
-    throw new ApplicationError(AccountError.INVALID_REFRESH_TOKEN);
 
   refToken.revokedAt = Date.now();
 
