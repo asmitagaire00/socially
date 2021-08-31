@@ -21,13 +21,13 @@ describe('Post routes', () => {
     };
   });
 
-  describe('POST /post/create', () => {
+  describe('POST /posts/create', () => {
     it('should return 200 ok and successfully create new post if data is valid', async () => {
       const accounts = await createAccounts([accountVerifiedOne]);
       const bearerTokenOne = accounts[0].jwtToken;
 
       const res = await supertest(app)
-        .post('/api/v1/post/create')
+        .post('/api/v1/posts/create')
         .set('Authorization', `Bearer ${bearerTokenOne}`)
         .set('Content-type', 'multipart/form-data')
         .field({ caption: newPost.caption })

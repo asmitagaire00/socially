@@ -16,7 +16,7 @@ async function register(user) {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/register`,
+    url: `${config.apiUrl}/api/v1/accounts/register`,
     data: user,
   });
 }
@@ -25,7 +25,7 @@ async function login(email, password) {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/login`,
+    url: `${config.apiUrl}/api/v1/accounts/login`,
     data: { email, password },
   });
 }
@@ -34,7 +34,7 @@ async function autoLogin(token) {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/auto-login`,
+    url: `${config.apiUrl}/api/v1/accounts/auto-login`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -46,7 +46,7 @@ async function logout(token) {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/revoke-token`,
+    url: `${config.apiUrl}/api/v1/accounts/revoke-token`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -57,7 +57,7 @@ async function verifyEmail(emailVerificationToken) {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/verify-email`,
+    url: `${config.apiUrl}/api/v1/accounts/verify-email`,
     data: { emailVerificationToken },
   });
 }
@@ -66,6 +66,6 @@ async function refreshToken() {
   return axios({
     method: 'POST',
     withCredentials: true, // request browser to set the cookie
-    url: `${config.apiUrl}/api/v1/account/refresh-token`,
+    url: `${config.apiUrl}/api/v1/accounts/refresh-token`,
   });
 }

@@ -30,11 +30,11 @@ app.use(
 app.use('/api/v1/ping', (req, res) =>
   res.status(200).json({ message: 'Server running.' }),
 );
-app.use('/api/v1/account', accountRouter);
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/post', postRouter);
-app.use('/api/v1/like', likeRouter);
-app.use('/api/v1/comment', commentRouter);
+app.use('/api/v1/accounts', accountRouter);
+app.use('/api/v1/users', userRouter);
+app.use('/api/v1/posts', postRouter);
+app.use('/api/v1/likes', likeRouter);
+app.use('/api/v1/comments', commentRouter);
 app.use('/api/v1/api-docs', swaggerRouter);
 
 app.all('*', (req, res) => {

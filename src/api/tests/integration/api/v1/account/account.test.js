@@ -46,10 +46,10 @@ describe('Account routes', () => {
     expect(dbUser).toBeDefined();
   });
 
-  describe('POST /account/register', () => {
+  describe('POST /accounts/register', () => {
     it('should return 200 ok and successfully create new user account if data is valid', async () => {
       const res = await supertest(app)
-        .post('/api/v1/account/register')
+        .post('/api/v1/accounts/register')
         .send(newAccount)
         .expect(200);
 
@@ -68,7 +68,7 @@ describe('Account routes', () => {
       newAccount.email = 'invalid email';
 
       const res = await supertest(app)
-        .post('/api/v1/account/register')
+        .post('/api/v1/accounts/register')
         .send(newAccount)
         .expect(400);
 
@@ -87,7 +87,7 @@ describe('Account routes', () => {
       newAccount.email = accountOne.email;
 
       const res = await supertest(app)
-        .post('/api/v1/account/register')
+        .post('/api/v1/accounts/register')
         .send(newAccount)
         .expect(400);
 
@@ -106,7 +106,7 @@ describe('Account routes', () => {
       newAccount.password = 'four';
 
       const res = await supertest(app)
-        .post('/api/v1/account/register')
+        .post('/api/v1/accounts/register')
         .send(newAccount)
         .expect(400);
 
@@ -121,11 +121,11 @@ describe('Account routes', () => {
     });
   });
 
-  describe('POST /account/verify-email', () => {
+  describe('POST /accounts/verify-email', () => {
     it('should return 400 bad request if email verification token is not present in the request body', async () => {
       const body = { foo: 'gfgfdg' };
       const res = await supertest(app)
-        .post('/api/v1/account/verify-email')
+        .post('/api/v1/accounts/verify-email')
         .send(body)
         .expect(400);
 
@@ -140,7 +140,7 @@ describe('Account routes', () => {
     });
   });
 
-  describe('POST /account/login', () => {
+  describe('POST /accounts/login', () => {
     it('should return 200 ok if email and password is valid and match', async () => {
       await createAccounts([accountVerifiedOne]);
       const body = {
@@ -148,7 +148,7 @@ describe('Account routes', () => {
         password: accountPassword,
       };
       const res = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(200);
 
@@ -175,7 +175,7 @@ describe('Account routes', () => {
         password: 'wrongpassword',
       };
       const res = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(400);
 
@@ -192,7 +192,7 @@ describe('Account routes', () => {
     });
   });
 
-  describe('POST /account/refresh-token', () => {
+  describe('POST /accounts/refresh-token', () => {
     it('should return 200 ok if tokens were successfully refreshed', async () => {
       await createAccounts([accountVerifiedOne]);
       const body = {
@@ -200,7 +200,7 @@ describe('Account routes', () => {
         password: accountPassword,
       };
       const res1 = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(200);
 
@@ -209,7 +209,7 @@ describe('Account routes', () => {
       const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
 
       const res = await supertest(app)
-        .post('/api/v1/account/refresh-token')
+        .post('/api/v1/accounts/refresh-token')
         .set('Cookie', [refTokenCookie])
         .expect(200);
 
@@ -228,7 +228,7 @@ describe('Account routes', () => {
     it('should return 401 unauthorized if tokens were unable to be refreshed due to invalid refresh token', async () => {
       const invalidRefToken = 'refreshToken=foo';
       const res = await supertest(app)
-        .post('/api/v1/account/refresh-token')
+        .post('/api/v1/accounts/refresh-token')
         .set('Cookie', [invalidRefToken])
         .expect(401);
 
@@ -245,7 +245,7 @@ describe('Account routes', () => {
     });
   });
 
-  describe('POST /account/revoke-token', () => {
+  describe('POST /accounts/revoke-token', () => {
     it('should return 200 ok if token is revoked', async () => {
       await createAccounts([accountVerifiedOne]);
       const body = {
@@ -253,7 +253,7 @@ describe('Account routes', () => {
         password: accountPassword,
       };
       const res1 = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(200);
 
@@ -263,7 +263,7 @@ describe('Account routes', () => {
       const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
 
       const res = await supertest(app)
-        .post('/api/v1/account/revoke-token')
+        .post('/api/v1/accounts/revoke-token')
         .set('Authorization', `Bearer ${jwtToken}`)
         .set('Cookie', [refTokenCookie])
         .send({
@@ -285,7 +285,7 @@ describe('Account routes', () => {
         password: accountPassword,
       };
       const res1 = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(200);
 
@@ -293,7 +293,7 @@ describe('Account routes', () => {
       const { jwtToken } = res1.body.data;
 
       const res = await supertest(app)
-        .post('/api/v1/account/revoke-token')
+        .post('/api/v1/accounts/revoke-token')
         .set('Authorization', `Bearer ${jwtToken}`)
         .send({
           refreshToken: `${refreshToken.value}foo`,
@@ -304,7 +304,7 @@ describe('Account routes', () => {
         error: {
           name: 'ApplicationError',
           type: 'SOCIALLY',
-          code: 'INVALID_REFRESH_TOKEN',
+          code: 'REFRESH_TOKEN_NOT_FOUND',
           message: expect.anything(),
           statusCode: 401,
         },
@@ -313,7 +313,7 @@ describe('Account routes', () => {
     });
   });
 
-  describe('POST /account/auto-login', () => {
+  describe('POST /accounts/auto-login', () => {
     it('should return 200 ok  if auto login using just jwt token was successful', async () => {
       await createAccounts([accountVerifiedOne]);
 
@@ -322,7 +322,7 @@ describe('Account routes', () => {
         password: accountPassword,
       };
       const res1 = await supertest(app)
-        .post('/api/v1/account/login')
+        .post('/api/v1/accounts/login')
         .send(body)
         .expect(200);
 
@@ -332,13 +332,22 @@ describe('Account routes', () => {
       const refTokenCookie = `refreshToken=${refreshToken.value}; Path:${refreshToken.flags.Path}; Expires:${refreshToken.flags.Expires}; HttpOnly; Secure; SameSite: ${refreshToken.flags.SameSite}`;
 
       const res = await supertest(app)
-        .post('/api/v1/account/auto-login')
+        .post('/api/v1/accounts/auto-login')
         .set('Authorization', `Bearer ${jwtToken}`)
         .set('Cookie', [refTokenCookie])
         .expect(200);
 
       expect(res.body).toEqual({
-        data: null,
+        data: {
+          createdAt: expect.anything(),
+          email: expect.anything(),
+          firstName: expect.anything(),
+          id: expect.anything(),
+          isVerified: true,
+          lastName: expect.anything(),
+          user: expect.anything(),
+          verifiedAt: expect.anything(),
+        },
         message: expect.anything(),
         success: true,
       });

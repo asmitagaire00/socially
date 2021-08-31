@@ -23,7 +23,7 @@ describe('Like routes', () => {
     };
   });
 
-  describe('POST LIKE /like', () => {
+  describe('POST LIKE /likes', () => {
     it('should return 200 ok and successfully create new like object if data is valid', async () => {
       const accounts = await createAccounts([accountVerifiedOne]);
       const bearerTokenOne = accounts[0].jwtToken;
@@ -32,7 +32,7 @@ describe('Like routes', () => {
       newLike.postId = posts[0]._id;
 
       const res = await supertest(app)
-        .post('/api/v1/like/')
+        .post('/api/v1/likes/')
         .set('Authorization', `Bearer ${bearerTokenOne}`)
         .send(newLike)
         .expect(200);
