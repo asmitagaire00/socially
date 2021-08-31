@@ -10,7 +10,7 @@ const { parseMultiFormData } = require('../../../helpers/formidable');
 const router = express.Router();
 
 router.post(
-  '/create',
+  '/',
   authorize(),
   parseMultiFormData,
   validation.createPostSchema,
@@ -18,7 +18,7 @@ router.post(
 );
 router.get('/:postId', authorize(), getPost);
 router.get('/', authorize(), getPosts);
-router.get('/feed/all', authorize(), getFollowedPosts);
+router.get('/all', authorize(), getFollowedPosts);
 
 module.exports = router;
 
@@ -42,7 +42,7 @@ function getPost(req, res, next) {
 
 function getPosts(req, res, next) {
   const { id: userId } = req.user;
-  const { skip, limit } = req.body;
+  const { skip = 0, limit = 10 } = req.query;
 
   postService
     .getPosts(userId, skip, limit)
@@ -54,7 +54,7 @@ function getPosts(req, res, next) {
 
 function getFollowedPosts(req, res, next) {
   const { id: userId } = req.user;
-  const { skip, limit } = req.body;
+  const { skip = 0, limit = 10 } = req.query;
 
   postService
     .getFollowedPosts(userId, skip, limit)

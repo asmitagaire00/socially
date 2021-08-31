@@ -27,7 +27,7 @@ describe('Post routes', () => {
       const bearerTokenOne = accounts[0].jwtToken;
 
       const res = await supertest(app)
-        .post('/api/v1/posts/create')
+        .post('/api/v1/posts/')
         .set('Authorization', `Bearer ${bearerTokenOne}`)
         .set('Content-type', 'multipart/form-data')
         .field({ caption: newPost.caption })
