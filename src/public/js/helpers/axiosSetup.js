@@ -25,8 +25,7 @@ export default function axiosSetup() {
       // try to refresh token if it is invalid
       if (
         error.response &&
-        error.response.data.error.code === 'INVALID_REFRESH_TOKEN' &&
-        error.response.status === 401 &&
+        error.response.data.error.code === 'UNAUTHORIZED' &&
         error.config &&
         !error.config._retry
       ) {
