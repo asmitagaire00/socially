@@ -48,12 +48,29 @@ async function createPost(postDetails) {
     { $push: { posts: newPost._id } },
   );
 
-  return newPost;
+  const retPost = await db.Post.findById(newPost._id).populate({
+    path: 'user',
+    select: 'account',
+    populate: {
+      path: 'account',
+      select: 'firstName lastName',
+    },
+  });
+
+  return retPost;
 }
 
 async function getPost(postId) {
   const post = await db.Post.findById(postId)
     .populate('likes')
+    .populate({
+      path: 'user',
+      select: 'account',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName',
+      },
+    })
     .populate({
       path: 'comments',
       options: { sort: { createdAt: 'desc' } },
@@ -75,13 +92,21 @@ async function getPosts(userId, skip, limit) {
   const allPosts = await db.Post.find({ user: userId })
     .populate('likes')
     .populate({
+      path: 'user',
+      select: 'account',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName',
+      },
+    })
+    .populate({
       path: 'comments',
       options: { sort: { createdAt: 'desc' } },
       populate: { path: 'user' },
     })
     .sort({ createdAt: 'desc' })
-    .skip(skip)
-    .limit(limit);
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10));
 
   return { posts: allPosts, count: allPostsCount };
 }
@@ -103,6 +128,14 @@ async function getFollowedPosts(userId, skip, limit) {
   const followedPostsCount = await db.Post.find(query).countDocuments();
   const followedPosts = await db.Post.find(query)
     .populate('likes')
+    .populate({
+      path: 'user',
+      select: 'account',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName',
+      },
+    })
     .populate({
       path: 'comments',
       options: { sort: { createdAt: 'desc' } },
