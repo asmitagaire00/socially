@@ -42,6 +42,9 @@ describe('Post routes', () => {
           createdAt: expect.anything(),
           updatedAt: expect.anything(),
           id: expect.anything(),
+          user: {
+            id: expect.anything(),
+          },
         },
         message: expect.anything(),
         success: true,

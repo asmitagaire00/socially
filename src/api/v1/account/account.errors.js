@@ -36,7 +36,7 @@ module.exports = {
     type: ApplicationError.type.SOCIALLY,
     code: 'INVALID_REFRESH_TOKEN',
     message: 'Invalid refresh token!',
-    statusCode: 401,
+    statusCode: 403,
   },
   REFRESH_TOKEN_NOT_FOUND: {
     type: ApplicationError.type.SOCIALLY,

@@ -230,7 +230,7 @@ describe('Account routes', () => {
       const res = await supertest(app)
         .post('/api/v1/accounts/refresh-token')
         .set('Cookie', [invalidRefToken])
-        .expect(401);
+        .expect(403);
 
       expect(res.body).toEqual({
         error: {
@@ -238,7 +238,7 @@ describe('Account routes', () => {
           type: 'SOCIALLY',
           code: 'INVALID_REFRESH_TOKEN',
           message: expect.anything(),
-          statusCode: 401,
+          statusCode: 403,
         },
         success: false,
       });
