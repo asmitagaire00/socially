@@ -23,10 +23,11 @@ router.get('/all', authorize(), getFollowedPosts);
 module.exports = router;
 
 function createPost(req, res, next) {
-  const postDetails = req.body;
+  const { caption, image } = req.body;
+  const user = req.user.id;
 
   postService
-    .createPost(postDetails)
+    .createPost({ caption, image, user })
     .then((post) => sendResponse(res, post, 'Post created successfully.'))
     .catch(next);
 }
