@@ -33,7 +33,28 @@ const getPosts = createAsyncThunk(
       const response = await postService.getPosts({ skip, limit });
       const { data } = response.data;
 
-      console.log('data: ', data);
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
+
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+
+      return rejectWithValue(message);
+    }
+  },
+);
+
+const createComment = createAsyncThunk(
+  'post/createComment',
+  async ({ comment, postId }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await postService.addComment({ comment, postId });
+      const { data } = response.data;
 
       return data;
     } catch (err) {
@@ -93,8 +114,29 @@ const PostSlice = createSlice({
       state.error = false;
       state.errorMessage = null;
     },
+
+    [createComment.pending]: (state) => {
+      state.loading = true;
+    },
+    [createComment.rejected]: (state, { payload }) => {
+      state.error = true;
+      state.errorMessage = payload;
+      state.loading = false;
+    },
+    [createComment.fulfilled]: (state, { payload }) => {
+      const { post: postId } = payload;
+
+      state.posts = state.posts.map((post) => {
+        if (post.id === postId) post.comments.unshift(payload);
+        return post;
+      });
+
+      state.loading = false;
+      state.error = false;
+      state.errorMessage = null;
+    },
   },
 });
 
-export { createPost, getPosts };
+export { createPost, getPosts, createComment };
 export default PostSlice.reducer;
