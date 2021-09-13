@@ -39,5 +39,25 @@ function addComment({ comment, postId }) {
   });
 }
 
-const postService = { getPosts, addPost, addComment };
+function likePost({ postId }) {
+  return axios({
+    method: 'POST',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/likes/`,
+    data: { postId },
+  });
+}
+
+function unlikePost({ likeId }) {
+  return axios({
+    method: 'DELETE',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/likes/`,
+    params: {
+      likeId,
+    },
+  });
+}
+
+const postService = { getPosts, addPost, addComment, likePost, unlikePost };
 export default postService;
