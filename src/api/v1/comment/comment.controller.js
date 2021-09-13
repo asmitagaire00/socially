@@ -14,7 +14,7 @@ router.delete('/:commentId', authorize(), deleteComment);
 module.exports = router;
 
 function makeComment(req, res, next) {
-  const { user: userId } = req.user.id;
+  const userId = req.user.id;
   const { comment, postId } = req.body;
 
   commentService

@@ -14,7 +14,7 @@ router.delete('/:likeId', authorize(), unlike);
 module.exports = router;
 
 function like(req, res, next) {
-  const { user: userId } = req.user;
+  const userId = req.user.id;
   const { postId } = req.body;
 
   likeService
