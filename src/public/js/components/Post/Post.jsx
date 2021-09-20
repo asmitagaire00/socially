@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
@@ -38,15 +37,14 @@ export default function Post(props) {
   useEffect(() => {
     let likedAlready = false;
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const like of likes) {
+    likes.some((like) => {
       const likedByUserId = like.user;
       if (likedByUserId === userId) {
         likedAlready = true;
         likeId.current = like.id;
-        break;
       }
-    }
+      return true;
+    });
 
     if (likedAlready) setLiked(true);
     else setLiked(false);
@@ -68,6 +66,7 @@ export default function Post(props) {
 
   return (
     <>
+      {/* eslint-disable-next-line react/jsx-no-bind */}
       <DialogCustom open={commentOpen} handleClose={handleCommentClose}>
         <Comment comments={comments} postId={postId} />
       </DialogCustom>
@@ -100,10 +99,12 @@ export default function Post(props) {
           <IconButton
             aria-label="Like"
             className={liked ? 'like--liked' : 'like--unliked'}
+            // eslint-disable-next-line react/jsx-no-bind
             onClick={handleLikeClick}
           >
             <FavoriteIcon />
           </IconButton>
+          {/* eslint-disable-next-line react/jsx-no-bind */}
           <IconButton aria-label="Comment" onClick={handleCommentClick}>
             <CommentIcon />
           </IconButton>
