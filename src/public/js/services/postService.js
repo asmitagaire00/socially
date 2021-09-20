@@ -52,10 +52,7 @@ function unlikePost({ likeId }) {
   return axios({
     method: 'DELETE',
     withCredentials: true,
-    url: `${config.apiUrl}/api/v1/likes/`,
-    params: {
-      likeId,
-    },
+    url: `${config.apiUrl}/api/v1/likes/${likeId}`,
   });
 }
 

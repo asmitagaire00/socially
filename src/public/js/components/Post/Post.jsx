@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+/* eslint-disable react/jsx-no-bind */
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,15 +19,44 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AvatarImg from '../../../assets/img/dennis.jpeg';
 import DialogCustom from '../DialogCustom/DialogCustom';
 import Comment from '../Comment/Comment';
+import { createLike, removeLike } from '../../redux/PostSlice';
 
 export default function Post(props) {
   const { likes, comments, caption, image, user, createdAt, postId } = props;
 
   const [commentOpen, setCommentOpen] = useState(false);
+  const [liked, setLiked] = useState(false);
 
-  const name = `${user.account.firstName} ${user.account.lastName}`;
+  const dispatch = useDispatch();
+  const { firstName, lastName } = user.account;
+  const { id: userId } = user;
+  const name = `${firstName} ${lastName}`;
   const likesCount = likes.length;
   const commentsCount = comments.length;
+
+  const likeId = useRef(null);
+  useEffect(() => {
+    let likedAlready = false;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const like of likes) {
+      const likedByUserId = like.user;
+      if (likedByUserId === userId) {
+        likedAlready = true;
+        likeId.current = like.id;
+        break;
+      }
+    }
+
+    if (likedAlready) setLiked(true);
+    else setLiked(false);
+  }, [likes, userId]);
+
+  function handleLikeClick(e) {
+    e.preventDefault();
+    if (liked) dispatch(removeLike({ likeId: likeId.current }));
+    else dispatch(createLike({ postId }));
+  }
 
   function handleCommentClick() {
     setCommentOpen(!commentOpen);
@@ -66,7 +97,11 @@ export default function Post(props) {
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <IconButton aria-label="Like">
+          <IconButton
+            aria-label="Like"
+            className={liked ? 'like--liked' : 'like--unliked'}
+            onClick={handleLikeClick}
+          >
             <FavoriteIcon />
           </IconButton>
           <IconButton aria-label="Comment" onClick={handleCommentClick}>
@@ -82,7 +117,7 @@ export default function Post(props) {
               color="textSecondary"
               component="p"
             >
-              {likesCount} likes
+              {likesCount <= 1 ? `${likesCount} like` : `${likesCount} likes`}
             </Typography>
             <Typography
               className="post__comments"
@@ -90,7 +125,9 @@ export default function Post(props) {
               color="textSecondary"
               component="p"
             >
-              {commentsCount} comments
+              {commentsCount <= 1
+                ? `${commentsCount} comment`
+                : `${commentsCount} comments`}
             </Typography>
           </div>
         </CardActions>

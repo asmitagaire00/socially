@@ -72,6 +72,52 @@ const createComment = createAsyncThunk(
   },
 );
 
+const createLike = createAsyncThunk(
+  'post/createLike',
+  async ({ postId }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await postService.likePost({ postId });
+      const { data } = response.data;
+
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
+
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+
+      return rejectWithValue(message);
+    }
+  },
+);
+
+const removeLike = createAsyncThunk(
+  'post/removeLike',
+  async ({ likeId }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await postService.unlikePost({ likeId });
+      const { data } = response.data;
+
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
+
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+
+      return rejectWithValue(message);
+    }
+  },
+);
+
 const PostSlice = createSlice({
   name: 'post',
   initialState: {
@@ -135,8 +181,50 @@ const PostSlice = createSlice({
       state.error = false;
       state.errorMessage = null;
     },
+
+    [createLike.pending]: (state) => {
+      state.loading = true;
+    },
+    [createLike.rejected]: (state, { payload }) => {
+      state.error = true;
+      state.errorMessage = payload;
+      state.loading = false;
+    },
+    [createLike.fulfilled]: (state, { payload }) => {
+      const { post: postId } = payload;
+
+      state.posts = state.posts.map((post) => {
+        if (post.id === postId) post.likes.unshift(payload);
+        return post;
+      });
+
+      state.loading = false;
+      state.error = false;
+      state.errorMessage = null;
+    },
+
+    [removeLike.pending]: (state) => {
+      state.loading = true;
+    },
+    [removeLike.rejected]: (state, { payload }) => {
+      state.error = true;
+      state.errorMessage = payload;
+      state.loading = false;
+    },
+    [removeLike.fulfilled]: (state, { payload }) => {
+      const { id: likeId } = payload;
+
+      state.posts = state.posts.map((post) => {
+        post.likes = post.likes.filter((like) => like.id !== likeId);
+        return post;
+      });
+
+      state.loading = false;
+      state.error = false;
+      state.errorMessage = null;
+    },
   },
 });
 
-export { createPost, getPosts, createComment };
+export { createPost, getPosts, createComment, createLike, removeLike };
 export default PostSlice.reducer;
