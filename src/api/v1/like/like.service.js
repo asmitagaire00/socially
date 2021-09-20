@@ -45,7 +45,7 @@ async function createLike(userId, postId) {
  * @returns like object that was deleted/unliked
  */
 async function deleteLike(likeId) {
-  const like = await db.Like.findOneAndRemove({ id: likeId });
+  const like = await db.Like.findOneAndRemove({ _id: likeId });
 
   // remove like from Post and User collections
   Promise.all([
