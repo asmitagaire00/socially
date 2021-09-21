@@ -96,6 +96,9 @@ const logout = createAsyncThunk(
 
       localStorage.removeItem('jwtToken');
 
+      // reset the state of the whole app
+      dispatch({ type: 'RESET_APP_STATE' });
+
       return data;
     } catch (err) {
       const { message } = err.response.data.error;
