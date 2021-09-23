@@ -1,23 +1,26 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, Route } from 'react-router';
+import PropTypes from 'prop-types';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 
-export default function ProtectedRoute({ children, ...rest }) {
+import routes from '../../config/routes';
+
+function ProtectedRoute({ children, ...rest }) {
   const { user } = useSelector((state) => state.auth);
+  const location = useLocation();
   const isAuthenticated = !!user;
 
   return (
     <Route
       {...rest}
-      render={({ location }) =>
+      render={() =>
         isAuthenticated ? (
           children
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: routes.root,
               state: { from: location },
             }}
           />
@@ -26,3 +29,12 @@ export default function ProtectedRoute({ children, ...rest }) {
     />
   );
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+};
+
+export default ProtectedRoute;

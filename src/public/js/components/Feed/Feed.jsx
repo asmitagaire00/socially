@@ -1,40 +1,13 @@
-import React, { useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getPosts } from '../../redux/PostSlice';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import AddPost from '../AddPost';
 import Post from '../Post';
+import useInfiniteScroll from '../../hooks/useInfiniteScroll';
 
-export default function Feed() {
-  const LIMIT = 7; // num of posts per request
-  const skip = useRef(0);
-  const dispatch = useDispatch();
-  const { loading, posts, totalPostsCount } = useSelector(
-    (state) => state.post,
-  );
-
-  const observer = useRef(null);
-
-  const bottomRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          dispatch(getPosts({ skip: skip.current, limit: LIMIT }));
-          skip.current += LIMIT;
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, dispatch],
-  );
-
+function Feed({ loading, posts, totalPostsCount, loadMore }) {
+  const infiniteScrollRef = useInfiniteScroll(loading, loadMore);
   return (
     <div className="feed">
-      <AddPost />
       {posts &&
         posts.map((post) => {
           const {
@@ -67,8 +40,18 @@ export default function Feed() {
       {posts.length === totalPostsCount ? (
         <></>
       ) : (
-        <div ref={bottomRef}>Loading...</div>
+        <div ref={infiniteScrollRef}>Loading...</div>
       )}
+      {!loading && totalPostsCount < 1 && <p>No posts!</p>}
     </div>
   );
 }
+
+Feed.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  totalPostsCount: PropTypes.number.isRequired,
+  loadMore: PropTypes.func.isRequired,
+};
+
+export default Feed;

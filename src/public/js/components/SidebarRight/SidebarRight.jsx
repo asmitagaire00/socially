@@ -22,7 +22,7 @@ export default function SidebarRight() {
   }
 
   return (
-    <div className="sidebar-right">
+    <>
       <button type="button" onClick={handleClick}>
         Dont click me
       </button>
@@ -95,6 +95,6 @@ export default function SidebarRight() {
           </li>
         </ul>
       </div>
-    </div>
+    </>
   );
 }

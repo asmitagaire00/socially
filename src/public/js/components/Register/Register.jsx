@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,8 +39,6 @@ function Register() {
 
     const newUser = { firstName, lastName, email, password, confirmPassword };
     dispatch(register(newUser));
-
-    console.log('register form submitted.');
   }
 
   return (
@@ -90,13 +87,6 @@ function Register() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-
-          <div>
-            <button type="submit" disabled={loading}>
-              Register
-            </button>
-            <Link to={`${routes.login}`}>Login</Link>
-          </div>
         </form>
 
         {error && <p>{`Error: ${errorMessage}`}</p>}

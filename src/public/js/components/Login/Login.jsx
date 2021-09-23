@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Redirect } from 'react-router';
-import { Link } from 'react-router-dom';
 import { Field, reduxForm } from 'redux-form';
 
-import routes from '../../config/routes';
 import { login } from '../../redux/AuthSlice';
 import validate from './validate';
 
@@ -25,12 +22,8 @@ function renderField({ input, label, type, meta: { touched, error } }) {
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const { loading, error, errorMessage, user } = useSelector(
-    (state) => state.auth,
-  );
-  const isAuthenticated = !!user;
   const dispatch = useDispatch();
+  const { loading, error, errorMessage } = useSelector((state) => state.auth);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -39,8 +32,6 @@ function Login() {
 
   return (
     <>
-      {isAuthenticated && <Redirect to={`${routes.root}`} />}
-
       <form onSubmit={onSubmit}>
         <Field
           name="email"
@@ -62,7 +53,6 @@ function Login() {
           <button type="submit" disabled={loading}>
             Login
           </button>
-          <Link to={`${routes.register}`}>Register</Link>
         </div>
       </form>
 

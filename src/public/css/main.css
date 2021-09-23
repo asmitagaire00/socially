@@ -1,8 +1,9 @@
-@import "./global.css";
-@import "../js/components/App/App.css";
-@import "../js/components/Header/header.css";
-@import "../js/components/Feed/feed.css";
-@import "../js/components/Sidebar/sidebar.css";
-@import "../js/components/SidebarRight/sidebarRight.css";
-@import "../js/components/AddPost/addPost.css";
-@import "../js/components/Post/post.css";
+@import './global.css';
+@import '../js/components/App/App.css';
+@import '../js/components/Header/header.css';
+@import '../js/components/Feed/feed.css';
+@import '../js/components/Sidebar/sidebar.css';
+@import '../js/components/SidebarRight/sidebarRight.css';
+@import '../js/components/AddPost/addPost.css';
+@import '../js/components/Post/post.css';
+@import '../js/components/AppLayout/AppLayout.css';
