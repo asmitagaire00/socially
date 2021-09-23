@@ -13,6 +13,18 @@ function getPosts({ skip, limit }) {
   });
 }
 
+function getFollowedPosts({ skip, limit }) {
+  return axios({
+    method: 'GET',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/posts/followed/all`,
+    params: {
+      skip,
+      limit,
+    },
+  });
+}
+
 function addPost(post) {
   // a post might consist image with caption so multipart form data is sent
   const postData = new FormData();
@@ -56,5 +68,12 @@ function unlikePost({ likeId }) {
   });
 }
 
-const postService = { getPosts, addPost, addComment, likePost, unlikePost };
+const postService = {
+  getPosts,
+  getFollowedPosts,
+  addPost,
+  addComment,
+  likePost,
+  unlikePost,
+};
 export default postService;
