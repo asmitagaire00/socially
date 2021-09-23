@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { userService } from '../../services/userService';
+import { userService } from '../../services/UserService';
 import routes from '../../config/routes';
 import { setNotification } from '../../redux/NotificationSlice';
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { setNotification } from './NotificationSlice';
-import postService from '../services/postService';
+import postService from '../services/PostService';
 
 const createPost = createAsyncThunk(
   'post/createPost',

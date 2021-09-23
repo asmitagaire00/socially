@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
-import { userService } from '../services/userService';
+import { userService } from '../services/UserService';
 
 export default function axiosSetup() {
   axios.interceptors.request.use(

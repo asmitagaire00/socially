@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { userService } from '../services/userService';
+import { userService } from '../services/UserService';
 import { setNotification } from './NotificationSlice';
 
 const initialState = {
