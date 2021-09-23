@@ -142,8 +142,8 @@ async function getFollowedPosts(userId, skip, limit) {
       populate: { path: 'user' },
     })
     .sort({ createdAt: 'desc' })
-    .skip(skip)
-    .limit(limit);
+    .skip(parseInt(skip, 10))
+    .limit(parseInt(limit, 10));
 
   return { posts: followedPosts, count: followedPostsCount };
 }

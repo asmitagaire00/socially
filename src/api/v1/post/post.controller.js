@@ -18,7 +18,7 @@ router.post(
 );
 router.get('/:postId', authorize(), getPost);
 router.get('/', authorize(), getPosts);
-router.get('/all', authorize(), getFollowedPosts);
+router.get('/followed/all', authorize(), getFollowedPosts);
 
 module.exports = router;
 
