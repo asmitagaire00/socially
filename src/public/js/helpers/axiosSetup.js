@@ -1,14 +1,15 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import { userService } from '../services/UserService';
+import TokenService from '../services/TokenService';
 
 export default function axiosSetup() {
   axios.interceptors.request.use(
     (conf) => {
-      const token = localStorage.getItem('jwtToken');
+      const token = TokenService.getToken();
 
       if (token) {
-        // eslint-disable-next-line no-param-reassign
         conf.headers.Authorization = `Bearer ${token}`;
         conf.withCredentials = true;
       }
@@ -35,7 +36,7 @@ export default function axiosSetup() {
           .refreshToken()
           .then((res) => {
             const { jwtToken } = res.data.data;
-            localStorage.setItem('jwtToken', jwtToken);
+            TokenService.setToken(jwtToken);
 
             return axios(originalRequest);
           })

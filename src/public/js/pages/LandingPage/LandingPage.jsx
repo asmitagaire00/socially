@@ -6,6 +6,7 @@ import Login from '../../components/Login';
 import Register from '../../components/Register';
 import routes from '../../config/routes';
 import { autoLogin } from '../../redux/AuthSlice';
+import TokenService from '../../services/TokenService';
 
 function LandingPage() {
   const { user } = useSelector((state) => state.auth);
@@ -16,7 +17,7 @@ function LandingPage() {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = TokenService.getToken();
     if (!user && jwtToken) dispatch(autoLogin(jwtToken));
   }, [dispatch, user]);
 

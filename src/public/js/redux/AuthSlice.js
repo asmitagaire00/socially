@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { userService } from '../services/UserService';
 import { setNotification } from './NotificationSlice';
+import TokenService from '../services/TokenService';
 
 const initialState = {
   loading: false,
@@ -53,7 +54,7 @@ const login = createAsyncThunk(
       const response = await userService.login(email, password);
       const { data } = response.data;
 
-      localStorage.setItem('jwtToken', data.jwtToken);
+      TokenService.setToken(data.jwtToken);
 
       return data;
     } catch (err) {
@@ -94,7 +95,7 @@ const logout = createAsyncThunk(
       const response = await userService.logout(jwtToken);
       const { data } = response.data;
 
-      localStorage.removeItem('jwtToken');
+      TokenService.removeToken();
 
       // reset the state of the whole app
       dispatch({ type: 'RESET_APP_STATE' });

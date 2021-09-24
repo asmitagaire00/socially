@@ -8,6 +8,7 @@ import FeaturedImg from '../../../assets/img/girl.jpg';
 import AvatarImg from '../../../assets/img/dennis.jpeg';
 
 import { logout } from '../../redux/AuthSlice';
+import TokenService from '../../services/TokenService';
 
 export default function SidebarRight() {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ export default function SidebarRight() {
   }
 
   function handleLogoutClick() {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = TokenService.getToken();
     if (jwtToken) dispatch(logout(jwtToken));
   }
 
