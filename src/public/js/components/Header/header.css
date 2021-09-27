@@ -1,97 +1,97 @@
 header {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    background-color: var(--color-primary);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: var(--color-primary);
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--height-header);
-    color: var(--color-white);
-    background-color: var(--color-primary);
-    margin: 0px var(--margin-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--height-header);
+  color: var(--color-white);
+  background-color: var(--color-primary);
+  margin: 0px var(--margin-page);
 }
 
 /* TODO: find a better way to select this and usage of this color */
 .header button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 0% !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 0% !important;
 }
 
 .header__logo {
-    flex: 0 1 var(--width-sidebar);
+  flex: 0 1 var(--width-sidebar-left);
 }
 
 .header__search {
-    flex: 6 1 auto;
-    display: flex;
-    height: 70%;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
+  flex: 0 1 var(--width-main);
+  display: flex;
+  height: 70%;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .header__search-input {
-    flex: 1;
-    height: 100%;
-    padding: var(--padding-s) var(--padding-l);
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    font-size: var(--font-default);
-    transition: all 0.2s ease-in;
+  flex: 1;
+  height: 100%;
+  padding: var(--padding-s) var(--padding-l);
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  font-size: var(--font-default);
+  transition: all 0.2s ease-in;
 }
 
 .header__search-input:hover {
-    background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 1);
 }
 
 .header__search-input:focus {
-    outline: none;
-    background-color: rgba(255, 255, 255, 1);
+  outline: none;
+  background-color: rgba(255, 255, 255, 1);
 }
 
 .header__search-input::placeholder {
-    color: var(--color-white);
+  color: var(--color-white);
 }
 
 .header__search-input:hover::placeholder {
-    color: var(--color-gray-dark);
+  color: var(--color-gray-dark);
 }
 
 .header__icon-wrapper {
-    flex: 0 1 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    transition: all 0.2s ease-in;
+  flex: 0 1 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transition: all 0.2s ease-in;
 }
 
 .header__icon-wrapper:hover {
-    cursor: pointer;
-    background-color: var(--color-white);
+  cursor: pointer;
+  background-color: var(--color-white);
 }
 
 .header__icon-wrapper:hover .header__search-icon {
-    color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .header__links {
-    flex: 0 1 var(--width-sidebar);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  flex: 0 1 var(--width-sidebar-right);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .header__icon-btn {
-    margin: 0px var(--margin-m) !important;
+  margin: 0px var(--margin-m) !important;
 }
 .header__icon {
-    color: var(--color-white);
+  color: var(--color-white);
 }
 
 .header__avatar {
-    border-radius: 0% !important;
+  border-radius: 0% !important;
 }

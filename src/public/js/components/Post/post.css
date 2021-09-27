@@ -17,10 +17,10 @@
   padding-left: var(--padding-xl);
 }
 
-.like--liked {
+.post__like--liked {
   color: blue !important;
 }
 
-.like--unliked {
+.post__like--unliked {
   color: var(--color-gray-dark) !important;
 }

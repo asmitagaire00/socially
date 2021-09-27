@@ -1,6 +1,5 @@
 .add-post {
   border: 1px solid blue;
-  margin-top: var(--margin-xl);
 }
 
 .add-post__textarea {

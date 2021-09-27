@@ -6,4 +6,5 @@
 @import '../js/components/SidebarRight/sidebarRight.css';
 @import '../js/components/AddPost/addPost.css';
 @import '../js/components/Post/post.css';
-@import '../js/components/AppLayout/AppLayout.css';
+@import '../js/components/AppLayout/appLayout.css';
+@import '../js/pages/ProfilePage/profile.css';

@@ -1,0 +1,9 @@
+/* .layout__main-area {
+  flex: 6 1 auto;
+  border: 1px solid black;
+} */
+
+.layout__main-area {
+  flex: 0 1 var(--width-main);
+  border: 1px solid black;
+}

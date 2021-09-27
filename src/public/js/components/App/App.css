@@ -1,5 +1,6 @@
 .app__main {
-    display: flex;
-    border: 1px solid magenta;
-    margin: 0px var(--margin-page);
+  display: flex;
+  border: 1px solid green;
+  margin-top: var(--margin-m);
+  justify-content: center;
 }

@@ -98,7 +98,7 @@ export default function Post(props) {
         <CardActions disableSpacing>
           <IconButton
             aria-label="Like"
-            className={liked ? 'like--liked' : 'like--unliked'}
+            className={liked ? 'post__like--liked' : 'post__like--unliked'}
             // eslint-disable-next-line react/jsx-no-bind
             onClick={handleLikeClick}
           >

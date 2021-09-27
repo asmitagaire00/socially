@@ -1,72 +1,80 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
-    --color-primary: #e44232;
-    --color-secondary: #f9f7f7;
+  --color-primary: #e44232;
+  --color-secondary: #f9f7f7;
 
-    --color-gray: #eee;
-    --color-gray-light: #f5f5f5;
-    --color-gray-dark: rgb(139, 139, 139);
-    --color-red: #ff0000;
-    --color-yellow: #ffd700;
-    --color-white: #ffffff;
-    --color-black: #000000;
-    --color-green: rgb(8, 202, 8);
+  --color-gray: #eee;
+  --color-gray-light: #f5f5f5;
+  --color-gray-dark: rgb(139, 139, 139);
+  --color-red: #ff0000;
+  --color-yellow: #ffd700;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-green: rgb(8, 202, 8);
 
-    --margin-s: 3px;
-    --margin-m: 5px;
-    --margin-l: 8px;
-    --margin-xl: 13px;
-    --margin-xxl: 21px;
-    --margin-page: 33px;
+  --margin-s: 3px;
+  --margin-m: 5px;
+  --margin-l: 8px;
+  --margin-xl: 13px;
+  --margin-xxl: 21px;
+  --margin-page: 33px;
 
-    --padding-s: 3px;
-    --padding-m: 5px;
-    --padding-l: 8px;
-    --padding-xl: 13px;
-    --padding-xxl: 21px;
+  --padding-s: 3px;
+  --padding-m: 5px;
+  --padding-l: 8px;
+  --padding-xl: 13px;
+  --padding-xxl: 21px;
 
-    --font-default: 1rem;
-    --font-m: 1.2rem;
-    --font-l: 1.5rem;
+  --font-default: 1rem;
+  --font-m: 1.2rem;
+  --font-l: 1.5rem;
 
-    --logo-text: 24px;
+  --logo-text: 24px;
 
-    --height-header: 60px;
+  --height-header: 60px;
 
-    --width-sidebar: 300px;
+  /* total width 1200px */
+  --width-sidebar-left: 250px;
+  --width-sidebar-right: 350px;
+  --width-main: 600px;
 
-    --icon-size: 1.5rem;
+  /* breakpoints */
+  --br-l: 1200px;
+  --br-m: 768px;
+  --br-s: 400px;
+
+  --icon-size: 1.5rem;
 }
 
 html {
-    font-family: Roboto, sans-serif;
+  font-family: Roboto, sans-serif;
 }
 
 body {
-    font-size: var(--font-default);
-    background-color: var(--color-gray-light);
+  font-size: var(--font-default);
+  background-color: var(--color-gray-light);
 }
 
 .link {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 /* override material svg icon size, default is 1.5rem*/
 .MuiSvgIcon-root {
-    font-size: var(--icon-size) !important;
+  font-size: var(--icon-size) !important;
 }
 
 /* override material props*/
 .MuiIconButton-root {
-    transition: none !important;
+  transition: none !important;
 }
 
 .MuiButton-startIcon {
-    color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }

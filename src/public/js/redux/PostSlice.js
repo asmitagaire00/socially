@@ -152,7 +152,11 @@ const PostSlice = createSlice({
     error: false,
     errorMessage: null,
   },
-  reducers: {},
+  reducers: {
+    clearPosts: (state) => {
+      state.posts = [];
+    },
+  },
   extraReducers: {
     [createPost.pending]: (state) => {
       state.loading = true;
@@ -270,6 +274,7 @@ const PostSlice = createSlice({
   },
 });
 
+const { clearPosts } = PostSlice.actions;
 export {
   createPost,
   getPosts,
@@ -277,5 +282,6 @@ export {
   createComment,
   createLike,
   removeLike,
+  clearPosts,
 };
 export default PostSlice.reducer;
