@@ -121,7 +121,7 @@ async function getPosts(userId, skip, limit) {
 async function getFollowedPosts(userId, skip, limit) {
   const followingList = [];
   const followings = await db.Follow.find({ follower: userId }).select('user');
-  followings.map((following) => followingList.push(following));
+  followings.map((following) => followingList.push(following.user));
 
   const query = { $or: [{ user: { $in: followingList } }, { user: userId }] };
 
