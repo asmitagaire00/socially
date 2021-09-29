@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-use-before-define */
 const express = require('express');
 
@@ -18,7 +19,6 @@ router.post(
 );
 router.get('/:postId', authorize(), getPost);
 router.get('/', authorize(), getPosts);
-router.get('/followed/all', authorize(), getFollowedPosts);
 
 module.exports = router;
 
@@ -42,25 +42,17 @@ function getPost(req, res, next) {
 }
 
 function getPosts(req, res, next) {
-  const { id: userId } = req.user;
-  const { skip = 0, limit = 10 } = req.query;
+  const userId = req.user.id;
+  const { skip = 0, limit = 10, followed } = req.query;
+
+  const _skip = parseInt(skip, 10);
+  const _limit = parseInt(limit, 10);
+  const _followed = !followed ? false : JSON.parse(followed);
 
   postService
-    .getPosts(userId, skip, limit)
+    .getPosts(userId, _skip, _limit, _followed)
     .then(({ posts, count }) =>
       sendResponse(res, { posts, count }, 'Get posts successful.'),
-    )
-    .catch(next);
-}
-
-function getFollowedPosts(req, res, next) {
-  const { id: userId } = req.user;
-  const { skip = 0, limit = 10 } = req.query;
-
-  postService
-    .getFollowedPosts(userId, skip, limit)
-    .then(({ posts, count }) =>
-      sendResponse(res, { posts, count }, 'Get followed posts successful.'),
     )
     .catch(next);
 }

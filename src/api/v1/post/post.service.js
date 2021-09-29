@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-underscore-dangle */
 const db = require('../../../helpers/db');
 const CommonError = require('../../../lib/error/commonErrors');
@@ -7,8 +8,11 @@ const {
   uploadSingleImageToCloudinary,
 } = require('../../../helpers/cloudinary');
 
-// eslint-disable-next-line no-use-before-define
-module.exports = { createPost, getPost, getPosts, getFollowedPosts };
+module.exports = {
+  createPost,
+  getPost,
+  getPosts,
+};
 
 /**
  * Create a post
@@ -60,6 +64,11 @@ async function createPost(postDetails) {
   return retPost;
 }
 
+/**
+ * Returns a post based on post id
+ * @param {string} postId Post id
+ * @returns a post
+ */
 async function getPost(postId) {
   const post = await db.Post.findById(postId)
     .populate('likes')
@@ -68,7 +77,7 @@ async function getPost(postId) {
       select: 'account',
       populate: {
         path: 'account',
-        select: 'firstName lastName',
+        select: 'firstName lastName userName',
       },
     })
     .populate({
@@ -85,18 +94,33 @@ async function getPost(postId) {
  * @param {string} userId user id
  * @param {int} skip how many posts to skip
  * @param {int} limit how many posts to limit
+ * @param {boolean} followed include followed posts if true
  * @returns an object containing posts and count
  */
-async function getPosts(userId, skip, limit) {
-  const allPostsCount = await db.Post.find({ user: userId }).countDocuments();
-  const allPosts = await db.Post.find({ user: userId })
+async function getPosts(userId, skip, limit, followed) {
+  let query = null;
+  // query based on 'followed' posts or posts made by user only
+  if (followed) {
+    const followingList = [];
+    const followings = await db.Follow.find({ follower: userId }).select(
+      'user',
+    );
+    followings.map((following) => followingList.push(following.user));
+
+    query = { $or: [{ user: { $in: followingList } }, { user: userId }] };
+  } else {
+    query = { user: userId };
+  }
+
+  const allPostsCount = await db.Post.find(query).countDocuments();
+  const allPosts = await db.Post.find(query)
     .populate('likes')
     .populate({
       path: 'user',
       select: 'account',
       populate: {
         path: 'account',
-        select: 'firstName lastName',
+        select: 'firstName lastName userName',
       },
     })
     .populate({
@@ -105,45 +129,8 @@ async function getPosts(userId, skip, limit) {
       populate: { path: 'user' },
     })
     .sort({ createdAt: 'desc' })
-    .skip(parseInt(skip, 10))
-    .limit(parseInt(limit, 10));
+    .skip(skip)
+    .limit(limit);
 
   return { posts: allPosts, count: allPostsCount };
-}
-
-/**
- * Get the posts followed by user(including the user posts as well)
- * @param {string} userId user id
- * @param {int} skip how many posts to skip
- * @param {int} limit how many posts to limit
- * @returns an object containing posts and count
- */
-async function getFollowedPosts(userId, skip, limit) {
-  const followingList = [];
-  const followings = await db.Follow.find({ follower: userId }).select('user');
-  followings.map((following) => followingList.push(following.user));
-
-  const query = { $or: [{ user: { $in: followingList } }, { user: userId }] };
-
-  const followedPostsCount = await db.Post.find(query).countDocuments();
-  const followedPosts = await db.Post.find(query)
-    .populate('likes')
-    .populate({
-      path: 'user',
-      select: 'account',
-      populate: {
-        path: 'account',
-        select: 'firstName lastName',
-      },
-    })
-    .populate({
-      path: 'comments',
-      options: { sort: { createdAt: 'desc' } },
-      populate: { path: 'user' },
-    })
-    .sort({ createdAt: 'desc' })
-    .skip(parseInt(skip, 10))
-    .limit(parseInt(limit, 10));
-
-  return { posts: followedPosts, count: followedPostsCount };
 }
