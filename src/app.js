@@ -9,6 +9,7 @@ const accountRouter = require('./api/v1/account/account.controller');
 const userRouter = require('./api/v1/user/user.controller');
 const postRouter = require('./api/v1/post/post.controller');
 const likeRouter = require('./api/v1/like/like.controller');
+const followRouter = require('./api/v1/follow/follow.controller');
 const commentRouter = require('./api/v1/comment/comment.controller');
 
 const app = express();
@@ -35,6 +36,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/likes', likeRouter);
 app.use('/api/v1/comments', commentRouter);
+app.use('/api/v1/follows', followRouter);
 app.use('/api/v1/api-docs', swaggerRouter);
 
 app.all('*', (req, res) => {
