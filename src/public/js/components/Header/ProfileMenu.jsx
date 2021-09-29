@@ -17,7 +17,8 @@ function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const { userName, user: userId } = useSelector((state) => state.auth.account);
+  const { userName, user } = useSelector((state) => state.auth.account);
+  const { id: userId } = user;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
