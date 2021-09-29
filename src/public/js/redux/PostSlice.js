@@ -28,9 +28,9 @@ const createPost = createAsyncThunk(
 
 const getPosts = createAsyncThunk(
   'post/getPosts',
-  async ({ skip, limit, all }, { rejectWithValue, dispatch }) => {
+  async ({ skip, limit, followed }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await postService.getPosts({ skip, limit }, all);
+      const response = await postService.getPosts({ skip, limit, followed });
       const { data } = response.data;
 
       return data;
@@ -49,11 +49,15 @@ const getPosts = createAsyncThunk(
   },
 );
 
-const getFollowedPosts = createAsyncThunk(
-  'post/getFollowedPosts',
-  async ({ skip, limit }, { rejectWithValue, dispatch }) => {
+const getPostsByUserName = createAsyncThunk(
+  'post/getPostsByUserName',
+  async ({ userName, skip, limit }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await postService.getFollowedPosts({ skip, limit });
+      const response = await postService.getPostsByUserName({
+        userName,
+        skip,
+        limit,
+      });
       const { data } = response.data;
 
       return data;
@@ -145,8 +149,8 @@ const PostSlice = createSlice({
   name: 'post',
   initialState: {
     posts: [],
-    followedPosts: [],
-    totalFollowedPostsCount: -1,
+    // followedPosts: [],
+    // totalFollowedPostsCount: -1,
     totalPostsCount: -1, // post not fetched from api, will be 0 if fetched with 0 posts
     loading: false,
     error: false,
@@ -167,7 +171,7 @@ const PostSlice = createSlice({
       state.loading = false;
     },
     [createPost.fulfilled]: (state, { payload }) => {
-      state.followedPosts.unshift(payload);
+      state.posts.unshift(payload);
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
@@ -183,27 +187,23 @@ const PostSlice = createSlice({
     },
     [getPosts.fulfilled]: (state, { payload }) => {
       state.posts.push(...payload.posts);
-      state.totalPostsCount =
-        payload.posts.length === 0 ? state.totalPostsCount + 1 : payload.count;
+      state.totalPostsCount = payload.count;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
     },
 
-    [getFollowedPosts.pending]: (state) => {
+    [getPostsByUserName.pending]: (state) => {
       state.loading = true;
     },
-    [getFollowedPosts.rejected]: (state, { payload }) => {
+    [getPostsByUserName.rejected]: (state, { payload }) => {
       state.error = true;
       state.errorMessage = payload;
       state.loading = false;
     },
-    [getFollowedPosts.fulfilled]: (state, { payload }) => {
-      state.followedPosts.push(...payload.posts);
-      state.totalFollowedPostsCount =
-        payload.posts.length === 0
-          ? state.totalFollowedPostsCount + 1
-          : payload.count;
+    [getPostsByUserName.fulfilled]: (state, { payload }) => {
+      state.posts.push(...payload.posts);
+      state.totalPostsCount = payload.count;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
@@ -274,14 +274,15 @@ const PostSlice = createSlice({
   },
 });
 
-const { clearPosts } = PostSlice.actions;
+const { clearPosts, clearFollowedPosts } = PostSlice.actions;
 export {
+  clearPosts,
+  clearFollowedPosts,
   createPost,
   getPosts,
-  getFollowedPosts,
+  getPostsByUserName,
   createComment,
   createLike,
   removeLike,
-  clearPosts,
 };
 export default PostSlice.reducer;

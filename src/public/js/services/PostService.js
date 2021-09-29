@@ -1,7 +1,7 @@
 import axios from 'axios';
 import config from '../config/config';
 
-function getPosts({ skip, limit }) {
+function getPosts({ skip, limit, followed }) {
   return axios({
     method: 'GET',
     withCredentials: true,
@@ -9,15 +9,16 @@ function getPosts({ skip, limit }) {
     params: {
       skip,
       limit,
+      followed,
     },
   });
 }
 
-function getFollowedPosts({ skip, limit }) {
+function getPostsByUserName({ userName, skip, limit }) {
   return axios({
     method: 'GET',
     withCredentials: true,
-    url: `${config.apiUrl}/api/v1/posts/followed/all`,
+    url: `${config.apiUrl}/api/v1/users/${userName}/posts`,
     params: {
       skip,
       limit,
@@ -70,10 +71,11 @@ function unlikePost({ likeId }) {
 
 const postService = {
   getPosts,
-  getFollowedPosts,
+  getPostsByUserName,
   addPost,
   addComment,
   likePost,
   unlikePost,
 };
+
 export default postService;
