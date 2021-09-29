@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -15,6 +16,8 @@ import routes from '../../config/routes';
 function ProfileMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const { userName, user: userId } = useSelector((state) => state.auth.user);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +57,12 @@ function ProfileMenu() {
         }}
       >
         <MenuItem onClick={handleClose}>
-          <Link to={routes.profile}>
+          <Link
+            to={{
+              pathname: routes.profile(userName),
+              state: { userId, userName },
+            }}
+          >
             <ListItemIcon>
               <AccountCircle fontSize="small" />
             </ListItemIcon>
