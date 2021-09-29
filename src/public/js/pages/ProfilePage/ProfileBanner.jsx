@@ -12,7 +12,7 @@ import userService from '../../services/UserService';
 function ProfileBanner() {
   const location = useLocation();
   const { userId } = location.state;
-  const { user: curUserId } = useSelector((state) => state.auth.user);
+  const { user: curUserId } = useSelector((state) => state.auth.account);
   const isThisCurUser = userId === curUserId;
 
   function handleFollowClick() {

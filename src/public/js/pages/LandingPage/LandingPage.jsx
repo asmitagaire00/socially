@@ -9,17 +9,17 @@ import { autoLogin } from '../../redux/AuthSlice';
 import TokenService from '../../services/TokenService';
 
 function LandingPage() {
-  const { user } = useSelector((state) => state.auth);
+  const { account } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const { state: locationState } = useLocation();
   const { from } = locationState || { from: { pathname: routes.home } };
 
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!account;
 
   useEffect(() => {
     const jwtToken = TokenService.getToken();
-    if (!user && jwtToken) dispatch(autoLogin(jwtToken));
-  }, [dispatch, user]);
+    if (!account && jwtToken) dispatch(autoLogin(jwtToken));
+  }, [dispatch, account]);
 
   return (
     <>

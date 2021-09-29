@@ -7,9 +7,9 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 import routes from '../../config/routes';
 
 function ProtectedRoute({ children, ...rest }) {
-  const { user } = useSelector((state) => state.auth);
+  const { account } = useSelector((state) => state.auth);
   const location = useLocation();
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!account;
 
   return (
     <Route

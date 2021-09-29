@@ -9,7 +9,7 @@ const initialState = {
   loading: false,
   error: false,
   errorMessage: null,
-  user: null,
+  account: null,
 };
 
 const register = createAsyncThunk(
@@ -116,7 +116,7 @@ const logout = createAsyncThunk(
 );
 
 const AuthSlice = createSlice({
-  name: 'user',
+  name: 'account',
   initialState,
   reducers: {},
   extraReducers: {
@@ -129,7 +129,7 @@ const AuthSlice = createSlice({
       state.errorMessage = payload;
     },
     [register.fulfilled]: (state) => {
-      state.user = null;
+      state.account = null;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
@@ -144,7 +144,7 @@ const AuthSlice = createSlice({
       state.errorMessage = payload;
     },
     [login.fulfilled]: (state, { payload }) => {
-      state.user = payload;
+      state.account = payload;
       state.loading = false;
       state.error = false;
       state.errorMessage = null;
@@ -160,7 +160,7 @@ const AuthSlice = createSlice({
     },
     [autoLogin.fulfilled]: (state, { payload }) => {
       state.loading = false;
-      state.user = payload;
+      state.account = payload;
       state.error = false;
       state.errorMessage = null;
     },
@@ -175,7 +175,7 @@ const AuthSlice = createSlice({
     },
     [logout.fulfilled]: (state) => {
       state.loading = false;
-      state.user = null;
+      state.account = null;
       state.error = false;
       state.errorMessage = null;
     },

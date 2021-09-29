@@ -28,10 +28,10 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { loading, error, errorMessage, user } = useSelector(
+  const { loading, error, errorMessage, account } = useSelector(
     (state) => state.auth,
   );
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!account;
   const dispatch = useDispatch();
 
   function onSubmit(e) {
