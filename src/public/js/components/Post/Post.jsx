@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import Card from '@material-ui/core/Card';
@@ -19,6 +20,7 @@ import AvatarImg from '../../../assets/img/dennis.jpeg';
 import DialogCustom from '../DialogCustom/DialogCustom';
 import Comment from '../Comment/Comment';
 import { createLike, removeLike } from '../../redux/PostSlice';
+import routes from '../../config/routes';
 
 export default function Post(props) {
   const { likes, comments, caption, image, user, createdAt, postId } = props;
@@ -27,7 +29,7 @@ export default function Post(props) {
   const [liked, setLiked] = useState(false);
 
   const dispatch = useDispatch();
-  const { firstName, lastName } = user.account;
+  const { firstName, lastName, userName } = user.account;
   const { id: userId } = user;
   const name = `${firstName} ${lastName}`;
   const likesCount = likes.length;
@@ -72,19 +74,22 @@ export default function Post(props) {
       </DialogCustom>
       <Card className="post">
         <CardHeader
-          avatar={
-            <Avatar
-              src={AvatarImg}
-              aria-label="post"
-              className="post__avatar"
-            />
-          }
+          avatar={<Avatar src={AvatarImg} className="post__avatar" />}
           action={
-            <IconButton aria-label="post options">
+            <IconButton>
               <MoreVertIcon />
             </IconButton>
           }
-          title={name}
+          title={
+            <Link
+              to={{
+                pathname: routes.profile(userName),
+                state: { userId, userName },
+              }}
+            >
+              {name}
+            </Link>
+          }
           subheader={createdAt}
         />
         {image && (
@@ -97,7 +102,6 @@ export default function Post(props) {
         </CardContent>
         <CardActions disableSpacing>
           <IconButton
-            aria-label="Like"
             className={liked ? 'post__like--liked' : 'post__like--unliked'}
             // eslint-disable-next-line react/jsx-no-bind
             onClick={handleLikeClick}
@@ -105,10 +109,10 @@ export default function Post(props) {
             <FavoriteIcon />
           </IconButton>
           {/* eslint-disable-next-line react/jsx-no-bind */}
-          <IconButton aria-label="Comment" onClick={handleCommentClick}>
+          <IconButton onClick={handleCommentClick}>
             <CommentIcon />
           </IconButton>
-          <IconButton aria-label="share">
+          <IconButton>
             <ShareIcon />
           </IconButton>
           <div className="post__info">
