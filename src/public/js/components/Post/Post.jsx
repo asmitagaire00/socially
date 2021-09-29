@@ -68,7 +68,6 @@ export default function Post(props) {
 
   return (
     <>
-      {/* eslint-disable-next-line react/jsx-no-bind */}
       <DialogCustom open={commentOpen} handleClose={handleCommentClose}>
         <Comment comments={comments} postId={postId} />
       </DialogCustom>
@@ -103,12 +102,10 @@ export default function Post(props) {
         <CardActions disableSpacing>
           <IconButton
             className={liked ? 'post__like--liked' : 'post__like--unliked'}
-            // eslint-disable-next-line react/jsx-no-bind
             onClick={handleLikeClick}
           >
             <FavoriteIcon />
           </IconButton>
-          {/* eslint-disable-next-line react/jsx-no-bind */}
           <IconButton onClick={handleCommentClick}>
             <CommentIcon />
           </IconButton>
