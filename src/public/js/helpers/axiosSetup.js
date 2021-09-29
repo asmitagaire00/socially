@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
-import { userService } from '../services/UserService';
+import { authService } from '../services/AuthService';
 import TokenService from '../services/TokenService';
 
 export default function axiosSetup() {
@@ -32,7 +32,7 @@ export default function axiosSetup() {
       ) {
         originalRequest._retry = true;
 
-        return userService
+        return authService
           .refreshToken()
           .then((res) => {
             const { jwtToken } = res.data.data;

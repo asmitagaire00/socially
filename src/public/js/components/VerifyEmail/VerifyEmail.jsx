@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { userService } from '../../services/UserService';
+import { authService } from '../../services/AuthService';
 import routes from '../../config/routes';
 import { setNotification } from '../../redux/NotificationSlice';
 
@@ -20,7 +20,7 @@ function VerifyEmail() {
   useEffect(() => {
     if (!token) return;
 
-    userService
+    authService
       .verifyEmail(token)
       .then(() => {
         setVerified(true);
