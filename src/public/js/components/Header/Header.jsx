@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,12 +8,17 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import SearchBar from './SearchBar';
 import ProfileMenu from './ProfileMenu';
+import routes from '../../config/routes';
 
 export default function Header() {
   return (
     <header>
       <div className="header">
-        <div className="header__logo">Socially</div>
+        <div className="header__logo">
+          <Link className="link" to={routes.home}>
+            Socially
+          </Link>
+        </div>
         <SearchBar />
         <div className="header__links">
           <IconButton

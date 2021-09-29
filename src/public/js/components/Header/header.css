@@ -88,10 +88,7 @@ header {
 .header__icon-btn {
   margin: 0px var(--margin-m) !important;
 }
+
 .header__icon {
   color: var(--color-white);
-}
-
-.header__avatar {
-  border-radius: 0% !important;
 }
