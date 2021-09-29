@@ -47,6 +47,9 @@ async function register(userData, origin) {
   newAccount.passwordHash = passwordHash;
   newAccount.emailVerificationToken = utils.generateRandomToken();
 
+  // generate a unique username
+  newAccount.userName = `${userData.firstName}-${newAccount._id}`;
+
   const newUser = new db.User({ account: newAccount._id });
   newAccount.user = newUser._id;
   newUser.account = newAccount._id;

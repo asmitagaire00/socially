@@ -7,6 +7,7 @@ const schema = new Schema({
   passwordHash: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  userName: { type: String, required: true },
   verifiedAt: Date,
   emailVerificationToken: String,
   createdAt: { type: Date, default: Date.now },
