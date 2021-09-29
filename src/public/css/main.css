@@ -1,4 +1,5 @@
 @import './global.css';
+
 @import '../js/components/App/App.css';
 @import '../js/components/Header/header.css';
 @import '../js/components/Feed/feed.css';
@@ -7,4 +8,5 @@
 @import '../js/components/AddPost/addPost.css';
 @import '../js/components/Post/post.css';
 @import '../js/components/AppLayout/appLayout.css';
-@import '../js/pages/ProfilePage/profile.css';
+
+@import '../js/pages/ProfilePage/profilePage.css';

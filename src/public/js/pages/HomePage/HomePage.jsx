@@ -1,15 +1,26 @@
 import React from 'react';
 
-import PostFeed from './PostFeed';
 import AddPost from '../../components/AddPost';
 import AppLayout from '../../components/AppLayout';
+import Feed from '../../components/Feed';
+import useFetchPosts from './useFetchPosts';
 
 function HomePage() {
+  const { postsClear, loading, posts, totalPostsCount, loadMorePosts } =
+    useFetchPosts();
+
   return (
     <div>
       <AppLayout>
         <AddPost />
-        <PostFeed />
+        {postsClear && (
+          <Feed
+            loading={loading}
+            posts={posts}
+            totalPostsCount={totalPostsCount}
+            loadMore={loadMorePosts}
+          />
+        )}
       </AppLayout>
     </div>
   );

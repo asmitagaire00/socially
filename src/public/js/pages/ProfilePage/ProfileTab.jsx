@@ -1,22 +1,20 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import AppBar from '@material-ui/core/AppBar';
 
+import Feed from '../../components/Feed';
+import useFetchPosts from './useFetchPosts';
 import ProfileTabPanel from './ProfileTabPanel';
-import ProfilePostFeed from './ProfilePostFeed';
-import { clearPosts } from '../../redux/PostSlice';
 
 function ProfileTab() {
   const [value, setValue] = React.useState(0);
-
-  const dispatch = useDispatch();
+  const { postsClear, loading, posts, totalPostsCount, loadMorePosts } =
+    useFetchPosts();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    dispatch(clearPosts());
   };
 
   return (
@@ -35,7 +33,14 @@ function ProfileTab() {
         </Tabs>
       </AppBar>
       <ProfileTabPanel value={value} index={0}>
-        <ProfilePostFeed />
+        {postsClear && (
+          <Feed
+            loading={loading}
+            posts={posts}
+            totalPostsCount={totalPostsCount}
+            loadMore={loadMorePosts}
+          />
+        )}
       </ProfileTabPanel>
       <ProfileTabPanel value={value} index={1}>
         Likes

@@ -1,11 +1,14 @@
 import React from 'react';
+
 import AppLayout from '../../components/AppLayout';
-import Profile from './Profile';
+import ProfileBanner from './ProfileBanner';
+import ProfileTab from './ProfileTab';
 
 function ProfilePage() {
   return (
     <AppLayout>
-      <Profile />
+      <ProfileBanner />
+      <ProfileTab />
     </AppLayout>
   );
 }
