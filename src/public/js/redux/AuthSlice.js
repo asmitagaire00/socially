@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { userService } from '../services/UserService';
+import { authService } from '../services/AuthService';
 import { setNotification } from './NotificationSlice';
 import TokenService from '../services/TokenService';
 
@@ -19,7 +19,7 @@ const register = createAsyncThunk(
     { rejectWithValue, dispatch },
   ) => {
     try {
-      const response = await userService.register({
+      const response = await authService.register({
         firstName,
         lastName,
         email,
@@ -51,7 +51,7 @@ const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue, dispatch }) => {
     try {
-      const response = await userService.login(email, password);
+      const response = await authService.login(email, password);
       const { data } = response.data;
 
       TokenService.setToken(data.jwtToken);
@@ -76,7 +76,7 @@ const autoLogin = createAsyncThunk(
   'auth/autoLogin',
   async (jwtToken, { rejectWithValue }) => {
     try {
-      const response = await userService.autoLogin(jwtToken);
+      const response = await authService.autoLogin(jwtToken);
       const { data } = await response.data;
 
       return data;
@@ -92,7 +92,7 @@ const logout = createAsyncThunk(
   'auth/logout',
   async (jwtToken, { rejectWithValue, dispatch }) => {
     try {
-      const response = await userService.logout(jwtToken);
+      const response = await authService.logout(jwtToken);
       const { data } = response.data;
 
       TokenService.removeToken();
