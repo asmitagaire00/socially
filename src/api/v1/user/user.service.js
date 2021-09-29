@@ -1,10 +1,9 @@
 const db = require('../../../helpers/db');
 const ApplicationError = require('../../../lib/error/ApplicationError');
 const CommonError = require('../../../lib/error/commonErrors');
-const UserError = require('./user.errors');
 
 // eslint-disable-next-line no-use-before-define
-module.exports = { getUser, followUser, unfollowUser };
+module.exports = { getUser, getPostsByUserName };
 
 /**
  * Get basic user details is returned from login service after logging in
@@ -27,73 +26,36 @@ async function getUser(id) {
 // TODO: delete user(authorized)
 
 /**
- * Follow a certain user
- * @param {*} id id of a user to be followed (req.params.id)
- * @param {*} curUserId id of a current user (req.body)
+ * Get all posts of a user by username
+ * @param {string} userName username
+ * @param {int} skip how many posts to skip
+ * @param {int} limit how many posts to limit
+ * @returns an object containing posts and count
  */
-async function followUser(id, curUserId) {
-  if (id === curUserId) {
-    throw new ApplicationError(UserError.INVALID_USER_OPERATION, {
-      message: 'Cannot follow yourself!',
-    });
-  }
+async function getPostsByUserName(userName, skip, limit) {
+  const account = await db.Account.findOne({ userName });
+  const { user: userId } = account;
 
-  const follow = await db.Follow.findOne({ user: id, follower: curUserId });
+  const query = { user: userId };
+  const allPostsCount = await db.Post.find(query).countDocuments();
+  const allPosts = await db.Post.find(query)
+    .populate('likes')
+    .populate({
+      path: 'user',
+      select: 'account',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName userName',
+      },
+    })
+    .populate({
+      path: 'comments',
+      options: { sort: { createdAt: 'desc' } },
+      populate: { path: 'user' },
+    })
+    .sort({ createdAt: 'desc' })
+    .skip(skip)
+    .limit(limit);
 
-  if (follow) {
-    throw new ApplicationError(UserError.INVALID_USER_OPERATION, {
-      message: 'You already follow this user!',
-    });
-  }
-
-  const followInstance = new db.Follow({ user: id, follower: curUserId });
-
-  Promise.all([
-    await followInstance.save(),
-    await db.User.findOneAndUpdate(
-      { _id: id },
-      { $push: { followers: followInstance.id } },
-    ),
-    await db.User.findOneAndUpdate(
-      { _id: curUserId },
-      { $push: { following: followInstance.id } },
-    ),
-  ]);
-
-  return followInstance;
-}
-
-/**
- * Follow a certain user
- * @param {*} id id of a user to be unfollowed (req.params.id)
- * @param {*} curUserId id of a current user (req.body)
- */
-async function unfollowUser(id, curUserId) {
-  if (id === curUserId) {
-    throw new ApplicationError(UserError.INVALID_USER_OPERATION, {
-      message: 'Cannot unfollow yourself!',
-    });
-  }
-
-  const follow = await db.Follow.findOne({ user: id, follower: curUserId });
-
-  if (!follow) {
-    throw new ApplicationError(UserError.INVALID_USER_OPERATION, {
-      message: `You haven't followed this user to unfollow!`,
-    });
-  }
-
-  const unfollowInstance = await db.Follow.findOneAndDelete({ user: id });
-  Promise.all([
-    await db.User.findOneAndUpdate(
-      { _id: unfollowInstance.user },
-      { $pull: { followers: unfollowInstance.id } },
-    ),
-    await db.User.findOneAndUpdate(
-      { _id: unfollowInstance.follower },
-      { $pull: { following: unfollowInstance.id } },
-    ),
-  ]);
-
-  return unfollowInstance;
+  return { posts: allPosts, count: allPostsCount };
 }

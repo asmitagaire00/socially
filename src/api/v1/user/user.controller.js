@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-use-before-define */
 const express = require('express');
 
@@ -7,9 +8,8 @@ const sendResponse = require('../../../lib/response/sendResponse');
 const userService = require('./user.service');
 const authorize = require('../../../middleware/authorize');
 
-router.post('/:id/follow', authorize(), followUser);
-router.put('/:id/unfollow', authorize(), unfollowUser);
 router.get('/:id', authorize(), getUser);
+router.get('/:userName/posts', authorize(), getPostsByUserName);
 
 module.exports = router;
 
@@ -20,20 +20,19 @@ function getUser(req, res, next) {
     .catch(next);
 }
 
-function followUser(req, res, next) {
-  userService
-    .followUser(req.params.id, req.body.id)
-    .then((followInstance) =>
-      sendResponse(res, followInstance, 'Follow user successful.'),
-    )
-    .catch(next);
-}
+// get posts by username
+function getPostsByUserName(req, res, next) {
+  const { userName } = req.params;
+  const { skip = 0, limit = 10 } = req.query;
 
-function unfollowUser(req, res, next) {
+  const _skip = parseInt(skip, 10);
+  const _limit = parseInt(limit, 10);
+
   userService
-    .unfollowUser(req.params.id, req.body.id)
-    .then((unfollowInstance) =>
-      sendResponse(res, unfollowInstance, 'Unfollow user successful.'),
+    .getPostsByUserName(userName, _skip, _limit)
+    .then(({ posts, count }) =>
+      sendResponse(res, { posts, count }, 'Get posts by user id successful.'),
     )
+
     .catch(next);
 }
