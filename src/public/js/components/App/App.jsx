@@ -30,7 +30,7 @@ export default function App() {
           <Route path={routes.verifyEmail} exact>
             <VerifyEmail />
           </Route>
-          <ProtectedRoute path={routes.profile} exact>
+          <ProtectedRoute path={routes.profileTemplate} exact>
             <ProfilePage />
           </ProtectedRoute>
         </Switch>

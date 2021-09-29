@@ -2,7 +2,8 @@ const routes = {
   root: '/',
   home: '/home',
   feed: '/feed',
-  profile: '/profile',
+  profileTemplate: '/profile/:userName',
+  profile: (userName) => `/profile/${userName}`,
   verifyEmail: '/account/verify-email',
 };
 
