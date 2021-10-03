@@ -10,11 +10,14 @@ const authorize = require('../../../middleware/authorize');
 module.exports = router;
 
 router.post('/:id/follow', authorize(), followUser);
-router.put('/:id/unfollow', authorize(), unfollowUser);
+router.delete('/:id/unfollow', authorize(), unfollowUser);
 
 function followUser(req, res, next) {
+  const { id: userId } = req.params;
+  const { id: curUserId } = req.user;
+
   followService
-    .followUser(req.params.id, req.body.id)
+    .followUser(userId, curUserId)
     .then((followInstance) =>
       sendResponse(res, followInstance, 'Follow user successful.'),
     )
@@ -22,8 +25,11 @@ function followUser(req, res, next) {
 }
 
 function unfollowUser(req, res, next) {
+  const { id: userId } = req.params;
+  const { id: curUserId } = req.user;
+
   followService
-    .unfollowUser(req.params.id, req.body.id)
+    .unfollowUser(userId, curUserId)
     .then((unfollowInstance) =>
       sendResponse(res, unfollowInstance, 'Unfollow user successful.'),
     )

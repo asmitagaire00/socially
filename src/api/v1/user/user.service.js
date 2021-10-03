@@ -1,9 +1,15 @@
+/* eslint-disable no-use-before-define */
 const db = require('../../../helpers/db');
 const ApplicationError = require('../../../lib/error/ApplicationError');
 const CommonError = require('../../../lib/error/commonErrors');
 
-// eslint-disable-next-line no-use-before-define
-module.exports = { getUser, getPostsByUserName };
+module.exports = {
+  getUser,
+  getAccountByUserName,
+  getPostsByUserName,
+  getFollowers,
+  getFollowings,
+};
 
 /**
  * Get basic user details is returned from login service after logging in
@@ -21,6 +27,23 @@ async function getUser(id) {
   return user;
 }
 
+async function getAccountByUserName(userName) {
+  const account = await db.Account.findOne({ userName })
+    .select('userName email firstName lastName user createdAt')
+    .populate({
+      path: 'user',
+      select: 'profileImage coverImage isOnline',
+    });
+
+  if (!account) {
+    throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND, {
+      message: 'User with corresponding username not found!',
+    });
+  }
+
+  return account;
+}
+
 // TODO: update user(authorized)
 
 // TODO: delete user(authorized)
@@ -34,6 +57,11 @@ async function getUser(id) {
  */
 async function getPostsByUserName(userName, skip, limit) {
   const account = await db.Account.findOne({ userName });
+  if (!account) {
+    throw new ApplicationError(CommonError.BAD_REQUEST, {
+      message: 'Could not find the account with given username!',
+    });
+  }
   const { user: userId } = account;
 
   const query = { user: userId };
@@ -58,4 +86,66 @@ async function getPostsByUserName(userName, skip, limit) {
     .limit(limit);
 
   return { posts: allPosts, count: allPostsCount };
+}
+
+// get followers of a certain user and check if curUserId 'isFollowing' userId
+async function getFollowers(userId, curUserId, skip, limit) {
+  const query = { user: userId };
+  const allFollowersCount = await db.Follow.find(query).countDocuments();
+  const allFollowers = await db.Follow.find(query)
+    .populate({
+      path: 'follower',
+      select: 'account isOnline profileImage',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName userName id',
+        options: { sort: { firstName: 'asc' } },
+      },
+    })
+    .skip(skip)
+    .limit(limit);
+
+  // check if current logged in user follows userId
+  const followingCount = await db.Follow.find({
+    user: userId,
+    follower: curUserId,
+  }).countDocuments();
+  const isCurUserFollowingUser = followingCount === 1;
+
+  return {
+    followers: allFollowers,
+    count: allFollowersCount,
+    isCurUserFollowingUser,
+  };
+}
+
+// get followings of a certain user and check if userId 'isFollower' of curUserId
+async function getFollowings(userId, curUserId, skip, limit) {
+  const query = { follower: curUserId };
+  const allFollowingsCount = await db.Follow.find(query).countDocuments();
+  const allFollowings = await db.Follow.find(query)
+    .populate({
+      path: 'user',
+      select: 'account isOnline profileImage',
+      populate: {
+        path: 'account',
+        select: 'firstName lastName userName id',
+        options: { sort: { firstName: 'asc' } },
+      },
+    })
+    .skip(skip)
+    .limit(limit);
+
+  // check if userId 'isFollower' of current logged in user curUserId
+  const followerCount = await db.Follow.find({
+    user: curUserId,
+    follower: userId,
+  }).countDocuments();
+  const isUserFollowingCurUser = followerCount === 1;
+
+  return {
+    followings: allFollowings,
+    count: allFollowingsCount,
+    isUserFollowingCurUser,
+  };
 }

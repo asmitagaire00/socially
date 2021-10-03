@@ -4,12 +4,14 @@ import { reducer as formReducer } from 'redux-form';
 import authReducer from './AuthSlice';
 import notificationReducer from './NotificationSlice';
 import postReducer from './PostSlice';
+import userReducer from './UserSlice';
 
 const allReducers = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
   post: postReducer,
   form: formReducer,
+  user: userReducer,
 });
 
 const rootReducer = (state, action) => {

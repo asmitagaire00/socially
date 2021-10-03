@@ -1,31 +1,52 @@
 import axios from 'axios';
 import config from '../config/config';
 
-function followUser({ id, curUserId }) {
+function followUser({ id }) {
   return axios({
     method: 'POST',
     withCredentials: true,
     url: `${config.apiUrl}/api/v1/follows/${id}/follow`,
-    data: {
-      curUserId,
-    },
   });
 }
 
-function unfollowUser({ id, curUserId }) {
+function unfollowUser({ id }) {
   return axios({
-    method: 'PUT',
+    method: 'DELETE',
     withCredentials: true,
     url: `${config.apiUrl}/api/v1/follows/${id}/unfollow`,
-    data: {
-      curUserId,
-    },
+  });
+}
+
+function getFollowersById({ userId }) {
+  return axios({
+    method: 'GET',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/users/${userId}/followers`,
+  });
+}
+
+function getFollowingsById({ userId }) {
+  return axios({
+    method: 'GET',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/users/${userId}/followings`,
+  });
+}
+
+function getAccountByUserName({ userName }) {
+  return axios({
+    method: 'GET',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/users/${userName}/account`,
   });
 }
 
 const userService = {
   followUser,
   unfollowUser,
+  getFollowersById,
+  getFollowingsById,
+  getAccountByUserName,
 };
 
 export default userService;

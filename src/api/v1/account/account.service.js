@@ -68,8 +68,7 @@ async function register(userData, origin) {
 async function authenticate(userData, origin) {
   const { email, password } = userData;
 
-  const account = await db.Account.findOne({ email }).populate('user');
-
+  const account = await db.Account.findOne({ email });
   // account valid and not verified
   if (!account || !bcryptjs.compareSync(password, account.passwordHash)) {
     throw new ApplicationError(AccountError.INCORRECT_CREDENTIALS);

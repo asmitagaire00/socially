@@ -38,7 +38,7 @@ function authorize() {
       );
     }
 
-    const account = await db.Account.findById(decodedToken.id).populate('user');
+    const account = await db.Account.findById(decodedToken.id);
     const user = await db.User.findById(decodedToken.user);
     const refreshTokens = await db.RefreshToken.find({ account: account.id });
 
