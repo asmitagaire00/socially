@@ -10,7 +10,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import CommentIcon from '@material-ui/icons/Comment';
@@ -95,9 +94,7 @@ export default function Post(props) {
           <CardMedia className="post__image" image={image} title={caption} />
         )}
         <CardContent>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {caption && caption}
-          </Typography>
+          <span>{caption && caption}</span>
         </CardContent>
         <CardActions disableSpacing>
           <IconButton
@@ -113,24 +110,14 @@ export default function Post(props) {
             <ShareIcon />
           </IconButton>
           <div className="post__info">
-            <Typography
-              className="post__likes"
-              variant="body2"
-              color="textSecondary"
-              component="p"
-            >
+            <span className="post__likes">
               {likesCount <= 1 ? `${likesCount} like` : `${likesCount} likes`}
-            </Typography>
-            <Typography
-              className="post__comments"
-              variant="body2"
-              color="textSecondary"
-              component="p"
-            >
+            </span>
+            <span className="post__comments">
               {commentsCount <= 1
                 ? `${commentsCount} comment`
                 : `${commentsCount} comments`}
-            </Typography>
+            </span>
           </div>
         </CardActions>
       </Card>

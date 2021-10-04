@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,6 +12,9 @@ import ProfileMenu from './ProfileMenu';
 import routes from '../../config/routes';
 
 export default function Header() {
+  const { userName, user } = useSelector((state) => state.auth.account);
+  const { id: userId } = user;
+
   return (
     <header>
       <div className="header">
@@ -21,15 +25,22 @@ export default function Header() {
         </div>
         <SearchBar />
         <div className="header__links">
-          <IconButton
-            className="header__icon-btn"
-            aria-label="Show messages"
-            color="inherit"
+          <Link
+            to={{
+              pathname: '/messages',
+              state: { userId, userName },
+            }}
           >
-            <Badge badgeContent={3} max={10} color="primary">
-              <MailIcon className="header__icon" />
-            </Badge>
-          </IconButton>
+            <IconButton
+              className="header__icon-btn"
+              aria-label="Show messages"
+              color="inherit"
+            >
+              <Badge badgeContent={3} max={10} color="primary">
+                <MailIcon className="header__icon" />
+              </Badge>
+            </IconButton>
+          </Link>
           <IconButton
             className="header__icon-btn"
             aria-label="Show notifications"
