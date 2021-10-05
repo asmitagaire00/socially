@@ -1,17 +1,23 @@
-* {
+*,
+*:before,
+*:after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 html {
-  font-family: Roboto, sans-serif;
+  font-family: 'Titillium Web', sans-serif;
   /* set base font-size: 10px (1rem == 10px), easier, eg: 2.1rem == 21px */
   font-size: 62.5% !important;
+
+  /* BREAKPOINTS: 480px(30em), 768px(48em), 1024px(64em), 1200px(75em) */
+  /* NOTE: for @media queries, 1em == 16px, since they are not affected by changes in font-size in html */
 }
 
 :root {
   --color-primary: #e44232;
+  --color-primary-0: #f9efee;
   --color-secondary: #f9f7f7;
 
   --color-gray: #eee;
@@ -22,10 +28,12 @@ html {
   --color-white: #ffffff;
   --color-black: #000000;
   --color-green: rgb(8, 202, 8);
+  --color-error: #cc0000;
 
   --margin-s: 0.3rem;
   --margin-m: 0.5rem;
   --margin-l: 0.8rem;
+  --margin-default: 1rem;
   --margin-xl: 1.3rem;
   --margin-xxl: 2.1rem;
   --margin-page: 3.3rem;
@@ -33,7 +41,8 @@ html {
   --padding-s: 0.3rem;
   --padding-m: 0.5rem;
   --padding-l: 0.8rem;
-  --padding-xl: 1.3rem;
+  --padding-default: 1rem;
+  --padding-xl: 1.2rem;
   --padding-xxl: 2.1rem;
 
   --font-s: 1rem;
@@ -50,12 +59,6 @@ html {
   --width-sidebar-right: 35rem;
   --width-main: 60rem;
 
-  /* breakpoints: 480px, 768px, 1024px, 1200px */
-  --br-s: 48em;
-  --br-m: 76.8em;
-  --br-l: 102.4em;
-  --br-xl: 120em;
-
   --icon-size: 1.5rem;
 }
 
@@ -64,47 +67,35 @@ body {
   background-color: var(--color-gray-light);
 }
 
+h1 {
+  margin: var(--margin-xxl) 0;
+}
+
 .link {
   text-decoration: none;
   color: inherit;
 }
 
-/* override material svg icon size, default is 1.5rem*/
-.MuiSvgIcon-root {
-  font-size: var(--icon-size) !important;
-  width: 1.6em !important;
-  height: 1.6em !important;
+.error-line {
+  display: flex;
+  color: var(--color-error);
 }
 
-/* override material svg icon size, default is 1.5rem*/
-.MuiAvatar-root {
-  width: 45px !important;
-  height: 45px !important;
+.input {
+  min-width: 35ch;
+  font-size: var(--font-default);
+  padding: var(--padding-xl);
+  margin: var(--margin-m) 0;
+  border: 2px solid var(--color-black);
+  border-radius: 0;
 }
 
-/* override material props*/
-.MuiIconButton-root {
-  transition: none !important;
-  font-size: var(--font-default) !important;
+.input--error {
+  border: 2px solid var(--color-error);
 }
 
-.MuiButton-root {
-  font-size: 1.6rem !important;
-}
-
-.MuiButton-startIcon {
-  color: var(--color-primary) !important;
-}
-
-/* header text */
-.MuiTypography-body2 {
-  font-size: var(--font-default) !important;
-}
-
-.MuiMenuItem-root {
-  font-size: var(--font-default) !important;
-}
-
-.MuiBadge-badge {
-  font-size: var(--font-s) !important;
+.input:focus {
+  border-radius: 0;
+  outline: none;
+  border: 2px solid var(--color-primary);
 }

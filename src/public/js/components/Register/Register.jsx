@@ -1,7 +1,11 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { Redirect } from 'react-router';
 import { Field, reduxForm } from 'redux-form';
 import { useDispatch, useSelector } from 'react-redux';
+
+import Button from '@material-ui/core/Button';
+import ErrorOutlineSharp from '@material-ui/icons/ErrorOutlineSharp';
 
 import routes from '../../config/routes';
 import validate from './validate';
@@ -10,12 +14,20 @@ import { register } from '../../redux/AuthSlice';
 function renderField({ input, label, type, meta: { touched, error } }) {
   return (
     <div>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>{label}</label>
+      <label htmlFor={`register-${label}`}>{label}</label>
       <div>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <input {...input} placeholder={label} type={type} />
-        {touched && error && <span>{error}</span>}
+        <input
+          id={`register-${label}`}
+          {...input}
+          type={type}
+          className={touched && error ? 'input input--error' : 'input'}
+        />
+        {touched && error && (
+          <div className="error-line">
+            <ErrorOutlineSharp />
+            &nbsp;{error}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -28,9 +40,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const { loading, error, errorMessage, account } = useSelector(
-    (state) => state.auth,
-  );
+  const { loading, account } = useSelector((state) => state.auth);
   const isAuthenticated = !!account;
   const dispatch = useDispatch();
 
@@ -42,7 +52,7 @@ function Register() {
   }
 
   return (
-    <>
+    <div className="register">
       {isAuthenticated && <Redirect to={`${routes.root}`} />}
 
       <div>
@@ -87,12 +97,21 @@ function Register() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          <div>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              className="register__btn"
+            >
+              {loading ? 'Signing up...' : 'Sign Up'}
+            </Button>
+          </div>
         </form>
 
-        {error && <p>{`Error: ${errorMessage}`}</p>}
         {loading && <p>Registering...</p>}
       </div>
-    </>
+    </div>
   );
 }
 

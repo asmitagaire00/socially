@@ -1,0 +1,57 @@
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing__auth {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white);
+}
+
+.landing__hero {
+  width: 100%;
+  background-color: var(--color-primary-0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing__logo-wrapper {
+  width: 35ch;
+}
+
+.landing__logo {
+  width: 15rem;
+  height: 15rem;
+  fill: var(--color-primary);
+}
+
+.landing__hero-img {
+  width: 80%;
+}
+
+.landing__svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.landing__auth-area {
+  margin-bottom: var(--margin-xl);
+}
+
+.landing__auth-link {
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+@media (min-width: 48em) {
+  .landing {
+    flex-direction: row-reverse;
+    background-color: red;
+  }
+}

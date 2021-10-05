@@ -1,19 +1,31 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 
-import { login } from '../../redux/AuthSlice';
+import Button from '@material-ui/core/Button';
+import ErrorOutlineSharp from '@material-ui/icons/ErrorOutlineSharp';
+
 import validate from './validate';
+import { login } from '../../redux/AuthSlice';
 
 function renderField({ input, label, type, meta: { touched, error } }) {
   return (
     <div>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label>{label}</label>
+      <label htmlFor={`login-${label}`}>{label}</label>
       <div>
-        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <input {...input} placeholder={label} type={type} />
-        {touched && error && <span>{error}</span>}
+        <input
+          id={`login-${label}`}
+          {...input}
+          type={type}
+          className={touched && error ? 'input input--error' : 'input'}
+        />
+        {touched && error && (
+          <div className="error-line">
+            <ErrorOutlineSharp />
+            &nbsp;{error}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -23,7 +35,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const { loading, error, errorMessage } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.auth);
 
   function onSubmit(e) {
     e.preventDefault();
@@ -31,7 +43,7 @@ function Login() {
   }
 
   return (
-    <>
+    <div className="login">
       <form onSubmit={onSubmit}>
         <Field
           name="email"
@@ -50,15 +62,19 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <div>
-          <button type="submit" disabled={loading}>
-            Login
-          </button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            className="login__btn"
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </Button>
         </div>
       </form>
 
-      {error && <p>{`Error: ${errorMessage}`}</p>}
       {loading && <p>Logging in...</p>}
-    </>
+    </div>
   );
 }
 

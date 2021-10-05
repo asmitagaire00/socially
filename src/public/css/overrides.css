@@ -1,0 +1,43 @@
+/* override material svg icon size, default is 1.5rem*/
+.MuiSvgIcon-root {
+  font-size: var(--icon-size) !important;
+  width: 1.6em !important;
+  height: 1.6em !important;
+}
+
+/* override material svg icon size, default is 1.5rem*/
+.MuiAvatar-root {
+  width: 45px !important;
+  height: 45px !important;
+}
+
+/* override material props*/
+.MuiIconButton-root {
+  transition: none !important;
+  font-size: var(--font-default) !important;
+}
+
+.MuiButton-root {
+  font-size: 1.6rem !important;
+  font-family: inherit !important;
+  border-radius: 0 !important;
+  text-transform: none !important;
+  background-color: var(--color-primary) !important;
+}
+
+.MuiButton-startIcon {
+  color: var(--color-primary) !important;
+}
+
+/* header text */
+.MuiTypography-body2 {
+  font-size: var(--font-default) !important;
+}
+
+.MuiMenuItem-root {
+  font-size: var(--font-default) !important;
+}
+
+.MuiBadge-badge {
+  font-size: var(--font-s) !important;
+}

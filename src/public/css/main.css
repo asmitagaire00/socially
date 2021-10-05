@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap');
+
 @import './global.css';
+@import './overrides.css';
 
 @import '../js/components/App/App.css';
 @import '../js/components/Header/header.css';
@@ -8,5 +11,8 @@
 @import '../js/components/AddPost/addPost.css';
 @import '../js/components/Post/post.css';
 @import '../js/components/AppLayout/appLayout.css';
+@import '../js/components/Login/login.css';
+@import '../js/components/Register/register.css';
 
 @import '../js/pages/ProfilePage/profilePage.css';
+@import '../js/pages/LandingPage/landingPage.css';

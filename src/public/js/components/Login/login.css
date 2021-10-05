@@ -1,0 +1,7 @@
+.login__btn {
+  width: 100%;
+  margin: var(--margin-xl) 0 !important;
+  color: var(--color-white) !important;
+  padding: var(--padding-xl) !important;
+  line-height: normal !important;
+}
