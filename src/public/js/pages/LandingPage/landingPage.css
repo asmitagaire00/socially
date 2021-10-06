@@ -42,6 +42,7 @@
 
 .landing__auth-area {
   margin-bottom: var(--margin-xl);
+  width: 35ch;
 }
 
 .landing__auth-link {

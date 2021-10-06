@@ -41,3 +41,7 @@
 .MuiBadge-badge {
   font-size: var(--font-s) !important;
 }
+
+.MuiAlert-root {
+  font-size: var(--font-default) !important;
+}

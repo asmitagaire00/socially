@@ -82,7 +82,7 @@ h1 {
 }
 
 .input {
-  min-width: 35ch;
+  width: 100%;
   font-size: var(--font-default);
   padding: var(--padding-xl);
   margin: var(--margin-m) 0;

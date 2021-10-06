@@ -11,7 +11,7 @@ import HomePage from '../../pages/HomePage';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage';
 import LandingPage from '../../pages/LandingPage/LandingPage';
 import axiosSetup from '../../helpers/axiosSetup';
-import ChatPage from '../../pages/ChatPage';
+// import ChatPage from '../../pages/ChatPage';
 
 export default function App() {
   // setup axios interceptors
@@ -28,9 +28,9 @@ export default function App() {
           <Route path={routes.root} exact>
             <LandingPage />
           </Route>
-          <ProtectedRoute path="/messages" exact>
+          {/* <ProtectedRoute path="/messages" exact>
             <ChatPage />
-          </ProtectedRoute>
+          </ProtectedRoute> */}
           <Route path={routes.verifyEmail} exact>
             <VerifyEmail />
           </Route>
