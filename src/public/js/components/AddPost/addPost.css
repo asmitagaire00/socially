@@ -14,20 +14,14 @@
   outline: none;
 }
 
+.add-post__btn {
+  color: var(--color-white) !important;
+  background-color: var(--color-primary) !important;
+}
+
 .add-post__btn-list {
   display: flex;
   justify-content: space-between;
-}
-
-.add-post__btn {
-  color: var(--color-black) !important;
-  background-color: var(--color-white) !important;
-}
-
-.add-post__share-btn {
-  border-radius: 0px !important;
-  background-color: var(--color-primary) !important;
-  color: var(--color-white) !important;
 }
 
 /* not using display: none; to hide because label would not be accessible by keyboard*/

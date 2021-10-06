@@ -11,6 +11,10 @@
   height: 45px !important;
 }
 
+.MuiTypography-displayBlock {
+  font-family: inherit !important;
+}
+
 /* override material props*/
 .MuiIconButton-root {
   transition: none !important;
@@ -22,6 +26,7 @@
   font-family: inherit !important;
   border-radius: 0 !important;
   text-transform: none !important;
+  color: var(--color-white) !important;
   background-color: var(--color-primary) !important;
 }
 
