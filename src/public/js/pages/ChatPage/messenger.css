@@ -1,0 +1,64 @@
+/* NOTE: change height accordingly
+   Total messenger height: 
+        searchbar: 5rem,
+        conv avatar area: 8rem,
+        send message input: 8.8rem,
+        rest chat area height: calc(100vh - 5rem - 8rem - 8.8rem -0.5rem) // 0.5 just for some little space
+*/
+
+.messenger {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.messenger__conv {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  height: 8rem;
+}
+
+.messenger__conv::-webkit-scrollbar {
+  display: none;
+}
+
+.messenger__search {
+  height: 5rem;
+}
+
+.messenger__chat-area {
+  height: calc(100vh - 5rem - 8rem - 8.8rem - 0.5rem);
+  overflow-y: auto;
+}
+
+@media (min-width: 64em) {
+  .messenger {
+    display: flex;
+    flex-direction: row;
+    height: 70vh;
+  }
+
+  .messenger__chat-area {
+    height: calc(70vh - 8.8rem);
+  }
+
+  .messenger__conversations {
+    flex: 0 0 25%;
+  }
+
+  .messenger__chat {
+    flex: 0 0 75%;
+  }
+
+  .messenger__conv {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+  }
+
+  .messenger__conv::-webkit-scrollbar {
+    display: block;
+  }
+}

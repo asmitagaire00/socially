@@ -16,3 +16,5 @@
 
 @import '../js/pages/ProfilePage/profilePage.css';
 @import '../js/pages/LandingPage/landingPage.css';
+@import '../js/pages/ChatPage/messenger.css';
+@import '../js/pages/ChatPage/conversation.css';

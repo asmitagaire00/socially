@@ -1,6 +1,14 @@
 import axios from 'axios';
 import config from '../config/config';
 
+function getUser({ id }) {
+  return axios({
+    method: 'GET',
+    withCredentials: true,
+    url: `${config.apiUrl}/api/v1/users/${id}`,
+  });
+}
+
 function followUser({ id }) {
   return axios({
     method: 'POST',
@@ -42,6 +50,7 @@ function getAccountByUserName({ userName }) {
 }
 
 const userService = {
+  getUser,
   followUser,
   unfollowUser,
   getFollowersById,
