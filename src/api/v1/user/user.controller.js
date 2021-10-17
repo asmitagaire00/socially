@@ -15,6 +15,7 @@ router.get('/:userName/posts', authorize(), getPostsByUserName);
 router.get('/:userId/followers', authorize(), getFollowersByUserId);
 router.get('/:userId/followings', authorize(), getFollowingsByUserId);
 router.get('/:userName/account', authorize(), getAccountByUserName);
+router.get('/:userId/conversations', authorize(), getConversationsByUserId);
 
 module.exports = router;
 
@@ -36,7 +37,6 @@ function getAccountByUserName(req, res, next) {
     .catch(next);
 }
 
-// get posts by username
 function getPostsByUserName(req, res, next) {
   const { userName } = req.params;
   if (!userName) throw new ApplicationError(CommonError.BAD_REQUEST);
@@ -95,5 +95,18 @@ function getFollowingsByUserId(req, res, next) {
       ),
     )
 
+    .catch(next);
+}
+
+function getConversationsByUserId(req, res, next) {
+  const { userId } = req.params;
+
+  if (!userId) throw new ApplicationError(CommonError.BAD_REQUEST);
+
+  userService
+    .getConversationsByUserId(userId)
+    .then((conv) =>
+      sendResponse(res, conv, 'Get conversation by user id successful.'),
+    )
     .catch(next);
 }
