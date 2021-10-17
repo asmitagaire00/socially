@@ -9,18 +9,21 @@ module.exports = {
   getPostsByUserName,
   getFollowers,
   getFollowings,
+  getConversationsByUserId,
 };
 
 /**
- * Get basic user details is returned from login service after logging in
- * @param {ObjectId} id id of a current user
- * @returns current user
+ * Get basic user details
+ * @param {ObjectId} id id of a user
+ * @returns user
  */
 async function getUser(id) {
   const user = await db.User.findById(id)
-    .populate('account')
-    .populate('following')
-    .populate('followers');
+    .select('profileImage coverImage isOnline')
+    .populate({
+      path: 'account',
+      select: 'userName email firstName lastName createdAt',
+    });
   if (!user) {
     throw new ApplicationError(CommonError.RESOURCE_NOT_FOUND);
   }
@@ -148,4 +151,15 @@ async function getFollowings(userId, curUserId, skip, limit) {
     count: allFollowingsCount,
     isUserFollowingCurUser,
   };
+}
+
+/**
+ * Get a conversation by user id
+ * @param {string} userId user id
+ * @returns conversation
+ */
+async function getConversationsByUserId(userId) {
+  const query = { users: { $in: [userId] } };
+  const conv = await db.Conversation.find(query);
+  return conv;
 }

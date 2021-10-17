@@ -34,6 +34,7 @@ function useAutoLogin() {
 function LandingPage() {
   const { from, isAuthenticated } = useAutoLogin();
   const [registration, setRegistration] = useState(false);
+  const { loading } = useSelector((state) => state.auth);
 
   function handleAuthClick() {
     setRegistration(!registration);
@@ -43,6 +44,8 @@ function LandingPage() {
   function handleKeyDown(e) {
     if (e.keyCode === 13) handleAuthClick();
   }
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>

@@ -11,6 +11,8 @@ const postRouter = require('./api/v1/post/post.controller');
 const likeRouter = require('./api/v1/like/like.controller');
 const followRouter = require('./api/v1/follow/follow.controller');
 const commentRouter = require('./api/v1/comment/comment.controller');
+const conversationRouter = require('./api/v1/conversation/conversation.controller');
+const messageRouter = require('./api/v1/message/message.controller');
 
 const app = express();
 
@@ -37,6 +39,8 @@ app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/likes', likeRouter);
 app.use('/api/v1/comments', commentRouter);
 app.use('/api/v1/follows', followRouter);
+app.use('/api/v1/conversations', conversationRouter);
+app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/api-docs', swaggerRouter);
 
 app.all('*', (req, res) => {
