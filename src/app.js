@@ -16,18 +16,26 @@ const messageRouter = require('./api/v1/message/message.controller');
 
 const app = express();
 
+app.disable('x-powered-by');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-// allow requests from any origin and with credentials
-app.use(
-  cors({
-    origin: (origin, callback) => callback(null, true),
-    credentials: true,
-  }),
-);
+// NOTE: using cors for development only(webpack dev server runs frontend on separate url)
+// this app sends the client build/assets on any(*) route(except /api route)
+// so no need to host client separately, so no cors required
+if (process.env.NODE_ENV !== 'production') {
+  console.log('cors enabled.', process.env.CLIENT_URL);
+  app.use(
+    cors({
+      origin: process.env.CLIENT_URL,
+      optionsSuccessStatus: 200, // for legacy browser support
+      credentials: true,
+    }),
+  );
+}
 
 // routes
 app.use('/api/v1/ping', (req, res) =>
