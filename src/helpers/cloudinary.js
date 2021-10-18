@@ -1,13 +1,20 @@
 const uuid = require('uuid');
 const cloudinary = require('cloudinary');
 
+const accessEnv = require('./accessEnv');
+
+const NODE_ENV = accessEnv('NODE_ENV');
+const CLOUDINARY_SECRET = accessEnv('CLOUDINARY_SECRET');
+const CLOUDINARY_API_KEY = accessEnv('CLOUDINARY_API_KEY');
+const CLOUDINARY_CLOUD_NAME = accessEnv('CLOUDINARY_CLOUD_NAME');
+
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_SECRET,
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_SECRET,
 });
 
-const rootFolder = process.env.NODE_ENV === 'production' ? 'socially' : 'dev';
+const rootFolder = NODE_ENV === 'production' ? 'socially' : 'dev';
 
 // eslint-disable-next-line no-use-before-define
 module.exports = { uploadSingleImageToCloudinary };

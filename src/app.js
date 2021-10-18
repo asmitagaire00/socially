@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const accessEnv = require('./helpers/accessEnv');
 const globalErrorHandler = require('./middleware/globalErrorHandler');
 const swaggerRouter = require('./api/docs/swagger');
 const accountRouter = require('./api/v1/account/account.controller');
@@ -15,6 +16,7 @@ const conversationRouter = require('./api/v1/conversation/conversation.controlle
 const messageRouter = require('./api/v1/message/message.controller');
 
 const app = express();
+const NODE_ENV = accessEnv('NODE_ENV');
 
 app.disable('x-powered-by');
 
@@ -26,11 +28,12 @@ app.use(express.static(path.join(__dirname, '..', 'dist')));
 // NOTE: using cors for development only(webpack dev server runs frontend on separate url)
 // this app sends the client build/assets on any(*) route(except /api route)
 // so no need to host client separately, so no cors required
-if (process.env.NODE_ENV !== 'production') {
-  console.log('cors enabled.', process.env.CLIENT_URL);
+if (NODE_ENV !== 'production') {
+  const CLIENT_URL = accessEnv('CLIENT_URL');
+  console.log('cors enabled for: ', CLIENT_URL);
   app.use(
     cors({
-      origin: process.env.CLIENT_URL,
+      origin: CLIENT_URL,
       optionsSuccessStatus: 200, // for legacy browser support
       credentials: true,
     }),

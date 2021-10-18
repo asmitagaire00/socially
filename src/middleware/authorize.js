@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
-const ApplicationError = require('../lib/error/ApplicationError');
-const Error = require('../lib/error/commonErrors');
+
 const db = require('../helpers/db');
+const accessEnv = require('../helpers/accessEnv');
+const Error = require('../lib/error/commonErrors');
+const ApplicationError = require('../lib/error/ApplicationError');
 
 // eslint-disable-next-line no-use-before-define
 module.exports = authorize;
@@ -29,7 +31,8 @@ function authorize() {
     }
 
     try {
-      decodedToken = jwt.verify(token, process.env.SECRET_JWT);
+      const SECRET_JWT = accessEnv('SECRET_JWT');
+      decodedToken = jwt.verify(token, SECRET_JWT);
     } catch (error) {
       return next(
         new ApplicationError(Error.UNAUTHORIZED, {

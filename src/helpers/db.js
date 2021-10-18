@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 const mongoose = require('mongoose');
 
+const accessEnv = require('./accessEnv');
 const Account = require('../api/v1/account/account.model');
 const RefreshToken = require('../api/v1/account/refresh-token.model');
 const Follow = require('../api/v1/follow/follow.model');
@@ -30,5 +31,6 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
 function connectDB() {
-  return mongoose.connect(process.env.MONGO_URI);
+  const MONGO_URI = accessEnv('MONGO_URI');
+  return mongoose.connect(MONGO_URI);
 }

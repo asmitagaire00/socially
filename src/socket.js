@@ -1,3 +1,5 @@
+const accessEnv = require('./helpers/accessEnv');
+
 const ChatService = {
   users: [],
 
@@ -21,10 +23,11 @@ const ChatService = {
 };
 
 function runSocket(server) {
+  const CLIENT_URL = accessEnv('CLIENT_URL');
   // eslint-disable-next-line global-require
   const io = require('socket.io')(server, {
     cors: {
-      origin: process.env.CLIENT_URL,
+      origin: CLIENT_URL,
     },
   });
 
