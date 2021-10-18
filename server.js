@@ -4,14 +4,15 @@ const PORT = accessEnv('PORT', 3000);
 const NODE_ENV = accessEnv('NODE_ENV');
 require('dotenv').config({ path: `.env.${NODE_ENV}` });
 
-const { connectDB } = require('./src/helpers/db');
 const app = require('./src/app');
 const runSocket = require('./src/socket');
+const log = require('./src/helpers/logger');
+const { connectDB } = require('./src/helpers/db');
 
 connectDB()
   .then(() =>
     app.listen(PORT, () => {
-      console.log(`Server started in port ${PORT}.`);
+      log.info(`Server started in port ${PORT}.`);
     }),
   )
   .then((server) => {
@@ -19,10 +20,10 @@ connectDB()
     runSocket(server);
   })
   .catch((error) => {
-    console.error(error);
+    log.debug(error);
   });
 
 process.on('unhandledRejection', (error) => {
-  console.error(error);
+  log.debug(error);
   process.exit(1);
 });

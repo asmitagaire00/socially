@@ -3,6 +3,7 @@ const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const log = require('./helpers/logger');
 const accessEnv = require('./helpers/accessEnv');
 const globalErrorHandler = require('./middleware/globalErrorHandler');
 const swaggerRouter = require('./api/docs/swagger');
@@ -30,7 +31,7 @@ app.use(express.static(path.join(__dirname, '..', 'dist')));
 // so no need to host client separately, so no cors required
 if (NODE_ENV !== 'production') {
   const CLIENT_URL = accessEnv('CLIENT_URL');
-  console.log('cors enabled for: ', CLIENT_URL);
+  log.info(`cors enabled for: ${CLIENT_URL}`);
   app.use(
     cors({
       origin: CLIENT_URL,
@@ -39,6 +40,20 @@ if (NODE_ENV !== 'production') {
     }),
   );
 }
+
+// log every incoming request
+app.all('*', (req, res, next) => {
+  log.info('Incoming request verbose: ');
+  log.info({
+    method: req.method,
+    headers: req.headers,
+    query: req.query,
+    body: req.body,
+    params: req.params,
+  });
+
+  return next();
+});
 
 // routes
 app.use('/api/v1/ping', (req, res) =>

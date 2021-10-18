@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
-const ApplicationError = require('../lib/error/ApplicationError');
-const CommonError = require('../lib/error/commonErrors');
+const log = require('../helpers/logger');
 const formatError = require('../lib/error/formatError');
+const CommonError = require('../lib/error/commonErrors');
+const ApplicationError = require('../lib/error/ApplicationError');
 const mapToApplicationError = require('../lib/error/mapToApplicationError');
 
 // eslint-disable-next-line no-use-before-define
@@ -10,7 +11,7 @@ module.exports = globalErrorHandler;
 
 // eslint-disable-next-line no-unused-vars
 function globalErrorHandler(err, req, res, next) {
-  console.log('Error from global error handler:', err);
+  log.error(`Error from global error handler: ${err.stack || err}`);
 
   if (err instanceof ApplicationError) {
     return res.status(err.statusCode || 500).json(formatError(err));
@@ -30,7 +31,9 @@ function globalErrorHandler(err, req, res, next) {
       return res.status(err.statusCode || 500).json(formatError(newError));
     } catch (error) {
       // log error
-      console.log('Error cannot map to application error: ', error);
+      log.error(
+        `Error cannot map to application error: ${error.stack || error}`,
+      );
       const unknownError = new ApplicationError(CommonError.UNKNOWN_ERROR);
       return res.status(err.statusCode || 500).json(formatError(unknownError));
     }
