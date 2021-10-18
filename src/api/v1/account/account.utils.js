@@ -5,8 +5,9 @@ const bcryptjs = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
-const config = require('../../../config/config.dev');
 const db = require('../../../helpers/db');
+const emailConfig = require('../../../helpers/email');
+const accessEnv = require('../../../helpers/accessEnv');
 
 module.exports = {
   hashPassword,
@@ -38,8 +39,8 @@ async function sendVerificationEmail(account, origin) {
   });
 }
 
-async function sendEmail({ to, subject, html, from = config.emailFrom }) {
-  const transporter = nodemailer.createTransport(config.smtpOptions);
+async function sendEmail({ to, subject, html, from = emailConfig.emailFrom }) {
+  const transporter = nodemailer.createTransport(emailConfig.smtpOptions);
   await transporter.sendMail({ from, to, subject, html });
 }
 
@@ -54,13 +55,15 @@ function generateRandomToken() {
 }
 
 function generateJwtToken(account) {
+  const SECRET_JWT = accessEnv('SECRET_JWT');
+
   return jwt.sign(
     {
       sub: account.id || account._id,
       id: account.id || account._id,
       user: account.user,
     },
-    process.env.SECRET_JWT,
+    SECRET_JWT,
     {
       expiresIn: '10m',
     },
