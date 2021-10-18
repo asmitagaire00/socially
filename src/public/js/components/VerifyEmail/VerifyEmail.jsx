@@ -38,10 +38,9 @@ function VerifyEmail() {
 
   return (
     <>
-      <div>token: {token}</div>
       <div>Email verification status: {JSON.stringify(verified)}</div>
       <div>
-        <Link to={`${routes.login}`}>Login</Link>
+        <Link to={`${routes.root}`}>Login</Link>
       </div>
     </>
   );
