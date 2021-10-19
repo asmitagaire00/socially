@@ -7,13 +7,13 @@ import SidebarRight from '../SidebarRight/SidebarRight';
 
 function AppLayout({ children }) {
   return (
-    <div className="app">
+    <div className="app-layout">
       <Header />
-      <div className="app__main">
+      <div className="app-layout__main">
         <div className="sidebar">
           <Sidebar />
         </div>
-        <div className="layout__main-area">{children}</div>
+        <div className="app-layout__feed">{children}</div>
         <div className="sidebar-right">
           <SidebarRight />
         </div>

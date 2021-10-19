@@ -1,6 +1,11 @@
 .sidebar-right {
-  flex: 0 1 var(--width-sidebar-right);
-  border: 1px solid black;
+  display: none;
+}
+
+.sidebar-right__featured-img {
+  max-height: 300px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .sidebar-right__birthday {
@@ -16,12 +21,6 @@
 
 .sidebar-right__birthday-icon > svg {
   fill: var(--color-primary);
-}
-
-.sidebar-right__featured-img {
-  max-height: 300px;
-  width: 100%;
-  object-fit: cover;
 }
 
 .sidebar-right__chat {
@@ -49,4 +48,12 @@
   border-radius: 0 !important;
   margin-right: var(--margin-xl);
   border: 2px solid var(--color-green);
+}
+
+@media (min-width: 48em) {
+  .sidebar-right {
+    display: block;
+    flex: 0 1 var(--width-sidebar-right);
+    border: 1px solid black;
+  }
 }

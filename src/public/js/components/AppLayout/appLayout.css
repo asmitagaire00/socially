@@ -1,9 +1,25 @@
-/* .layout__main-area {
-  flex: 6 1 auto;
-  border: 1px solid black;
-} */
+.app-layout__main {
+  display: flex;
+  margin-top: var(--margin-m);
+  justify-content: center;
+}
 
-.layout__main-area {
-  flex: 0 1 var(--width-main);
-  border: 1px solid black;
+.app-layout__feed {
+  flex: 0 1 100%;
+  max-width: var(--width-main);
+  margin: 0 var(--margin-l);
+}
+
+@media (min-width: 30em) {
+  .app-layout__feed {
+    flex: 1 1 50%;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 48em) {
+  .app-layout__feed {
+    flex: 1 1 50%;
+    max-width: var(--width-main);
+  }
 }
