@@ -1,37 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { io } from 'socket.io-client';
+import { Route, useLocation } from 'react-router-dom';
 
-import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 
-import Message from './Message';
-import SendMessage from './SendMessage';
-import Conversation from './Conversation';
+import ChatArea from './ChatArea';
+import { getFollowingsById } from '../../redux/UserSlice';
 import messageService from '../../services/MessageService';
 import { setNotification } from '../../redux/NotificationSlice';
-import config from '../../config/config';
-import { getFollowingsById } from '../../redux/UserSlice';
+
+import {
+  useSocketChat,
+  useGetMessages,
+  useGetConversations,
+  useScrollToLatestMessageRef,
+} from './hooks';
+import ConversationList from './ConversationList';
+import routes from '../../config/routes';
 
 function Messenger() {
-  const [conversations, setConversations] = useState([]);
+  const { user } = useSelector((state) => state.auth.account);
+  const conversations = useGetConversations({
+    userId: user,
+  });
   const [currentConversation, setCurrentConversation] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useGetMessages({
+    currentConvId: currentConversation?.id,
+  });
   const [message, setMessage] = useState('');
   const [liveMessage, setLiveMessage] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth.account);
   const { followingDetails } = useSelector((state) => state.user);
-  const scrollToLatestMsgRef = useRef();
-  const socket = useRef();
+  const scrollToLatestMsgRef = useScrollToLatestMessageRef({ messages });
+  const socket = useSocketChat();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    // init socket
-    socket.current = io(config.apiUrl);
+    // get conversation id from path /messages/convid
+    const splitPathname = pathname.split('/');
+    const convid = splitPathname[splitPathname.length - 1];
+    const conv = conversations?.find((c) => c.id === convid);
+    if (conv) setCurrentConversation(conv);
+  }, [conversations, pathname]);
 
+  useEffect(() => {
     dispatch(getFollowingsById({ userId: user }));
 
     socket.current.on('get-message', (data) => {
@@ -44,7 +59,7 @@ function Messenger() {
         id: data.senderId + Date.now().toString(), // temp id for live socket msgs only
       });
     });
-  }, [dispatch, user]);
+  }, [dispatch, socket, user]);
 
   useEffect(() => {
     if (
@@ -53,7 +68,7 @@ function Messenger() {
     ) {
       setMessages((prev) => [...prev, liveMessage]);
     }
-  }, [currentConversation?.users, liveMessage]);
+  }, [currentConversation?.users, liveMessage, setMessages]);
 
   useEffect(() => {
     socket.current.emit('add-user', user, currentConversation?.id);
@@ -64,73 +79,26 @@ function Messenger() {
         ),
       );
     });
-  }, [currentConversation?.id, followingDetails?.followings, user]);
-
-  //
-  useEffect(() => {
-    messageService
-      .getConversations({ userId: user })
-      .then((res) => {
-        const { data } = res.data;
-        setConversations(data);
-      })
-      .catch(() =>
-        dispatch(
-          setNotification({
-            message: 'Error. Could not fetch conversations!',
-            isError: true,
-          }),
-        ),
-      );
-  }, [dispatch, user]);
-
-  useEffect(() => {
-    const id = currentConversation?.id;
-    if (id) {
-      messageService
-        .getMessages({ convId: id })
-        .then((res) => {
-          const { data } = res.data;
-          setMessages(data);
-        })
-        .catch(() =>
-          dispatch(
-            setNotification({
-              message: 'Error. Could not fetch messages!',
-              isError: true,
-            }),
-          ),
-        );
-    }
-  }, [currentConversation?.id, dispatch, user]);
-
-  useEffect(() => {
-    scrollToLatestMsgRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // keyboard support a11y
-  function handleKeyDown(e, conv) {
-    if (e.keyCode === 13) setCurrentConversation(conv);
-  }
+  }, [currentConversation?.id, followingDetails?.followings, socket, user]);
 
   function handleSendMessage(e) {
     e.preventDefault();
 
-    socket.current.emit('send-message', {
+    const messageData = {
       convId: currentConversation?.id,
       senderId: user,
-      receiversId: currentConversation?.users,
       text: message,
+    };
+
+    socket.current.emit('send-message', {
+      ...messageData,
+      receiversId: currentConversation?.users,
       createdAt: Date.now().toString(),
       updatedAt: Date.now().toString(),
     });
 
     messageService
-      .createMessage({
-        convId: currentConversation?.id,
-        senderId: user,
-        text: message,
-      })
+      .createMessage(messageData)
       .then((res) => {
         const { data } = res.data;
         setMessage('');
@@ -166,41 +134,35 @@ function Messenger() {
             />
           </div>
           <Divider />
-          <div className="messenger__conv">
-            {conversations.map((conv) => (
-              <div
-                onClick={() => setCurrentConversation(conv)}
-                key={conv.id}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => handleKeyDown(e, conv)}
-              >
-                <Conversation conversation={conv} />
-              </div>
-            ))}
+          <div
+            className={
+              pathname !== routes.messages
+                ? 'messenger__conv--hidden'
+                : 'messenger__conv'
+            }
+          >
+            <ConversationList
+              conversations={conversations}
+              setCurrentConversation={setCurrentConversation}
+            />
           </div>
         </div>
         <Divider />
         <Divider orientation="vertical" flexItem />
         <div className="messenger__chat">
-          <List className="messenger__chat-area">
-            {!currentConversation && (
-              <p>Click one of the conversations to get started.</p>
-            )}
-            {messages &&
-              messages.map((msg) => (
-                <div ref={scrollToLatestMsgRef} key={msg.id}>
-                  <Message message={msg} own={user === msg.sender} />
-                </div>
-              ))}
-          </List>
-
-          <Divider />
-          <SendMessage
-            message={message}
-            handleSendMessage={handleSendMessage}
-            handleMessageInputChange={handleMessageInputChange}
-          />
+          {!currentConversation && (
+            <p>You have x new messages.Click conversation to read.</p>
+          )}
+          <Route path={routes.messageTemplate} exact>
+            <ChatArea
+              user={user}
+              message={message}
+              messages={messages}
+              scrollToLatestMsgRef={scrollToLatestMsgRef}
+              handleSendMessage={handleSendMessage}
+              handleMessageInputChange={handleMessageInputChange}
+            />
+          </Route>
         </div>
       </Paper>
     </>

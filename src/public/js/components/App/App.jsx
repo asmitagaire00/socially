@@ -28,7 +28,7 @@ export default function App() {
           <Route path={routes.root} exact>
             <LandingPage />
           </Route>
-          <ProtectedRoute path="/messages" exact>
+          <ProtectedRoute path={routes.messages}>
             <ChatPage />
           </ProtectedRoute>
           <Route path={routes.verifyEmail} exact>
