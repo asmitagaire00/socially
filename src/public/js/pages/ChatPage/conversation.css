@@ -1,6 +1,6 @@
-.conversation__name {
+/* .conversation__name {
   display: none;
-}
+} */
 
 @media (min-width: 64em) {
   .conversation__name {
