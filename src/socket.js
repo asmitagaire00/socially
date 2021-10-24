@@ -50,6 +50,18 @@ function runSocket(server) {
       });
     });
 
+    socket.on('typing', ({ convId, senderId, receiversId, isTyping }) => {
+      const receivers = ChatService.getRecipientUsers(receiversId);
+
+      receivers.forEach((receiver) => {
+        io.to(receiver.socketId).emit('display-typing', {
+          convId,
+          senderId,
+          isTyping,
+        });
+      });
+    });
+
     socket.on('disconnect', () => {
       ChatService.removeUser(socket.id);
       io.emit('get-users', ChatService.getUsers());
