@@ -1,30 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import Conversation from './Conversation';
+import { setCurrentConversation } from '../../redux/ChatSlice';
 
-function ConversationList({ conversations, setCurrentConversation }) {
-  // keyboard support a11y
-  function handleKeyDown(e, conv) {
-    if (e.keyCode === 13) setCurrentConversation(conv);
-  }
+function ConversationList({ conversations }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // set current conversation to null on mount
+    dispatch(setCurrentConversation(null));
+  }, [dispatch]);
 
   return (
     <>
       {conversations &&
         conversations.map((conv) => (
-          <div
-            onClick={() => setCurrentConversation(conv)}
-            key={conv.id}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => handleKeyDown(e, conv)}
-          >
-            <Link to={`/messages/${conv.id}`}>
-              <Conversation conversation={conv} />
-            </Link>
-          </div>
+          <Conversation conversation={conv} key={conv.id} />
         ))}
     </>
   );
@@ -32,7 +25,6 @@ function ConversationList({ conversations, setCurrentConversation }) {
 
 ConversationList.propTypes = {
   conversations: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setCurrentConversation: PropTypes.func.isRequired,
 };
 
 export default ConversationList;

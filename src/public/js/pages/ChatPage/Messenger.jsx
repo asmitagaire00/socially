@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { Route, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,23 +8,24 @@ import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 
 import ChatArea from './ChatArea';
-import { getFollowingsById } from '../../redux/UserSlice';
-
 import routes from '../../config/routes';
 import config from '../../config/config';
-import { useGetConversations } from './hooks';
 import ConversationList from './ConversationList';
+import {
+  getConversations,
+  setCurrentConversation,
+} from '../../redux/ChatSlice';
+import { getFollowingsById, setOnlineFriends } from '../../redux/UserSlice';
 
 function Messenger() {
   const { user } = useSelector((state) => state.auth.account);
-  const conversations = useGetConversations({
-    userId: user,
-  });
-  const [currentConversation, setCurrentConversation] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const dispatch = useDispatch();
+  const { conversations, currentConversation } = useSelector(
+    (state) => state.chat,
+  );
   const { followingDetails } = useSelector((state) => state.user);
+  // const [onlineUsers, setOnlineUsers] = useState([]);
   const socket = useRef();
+  const dispatch = useDispatch();
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -33,12 +34,19 @@ function Messenger() {
   }, []);
 
   useEffect(() => {
-    // get conversation id from path /messages/convid
-    const splitPathname = pathname.split('/');
-    const convid = splitPathname[splitPathname.length - 1];
-    const conv = conversations?.find((c) => c.id === convid);
-    if (conv) setCurrentConversation(conv);
-  }, [conversations, pathname]);
+    // fetch conversations
+    dispatch(getConversations({ userId: user }));
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    // get conversation id from path /messages/:convId
+    if (conversations?.conversations) {
+      const splitPathname = pathname.split('/');
+      const convid = splitPathname[splitPathname.length - 1];
+      const conv = conversations?.conversations.find((c) => c.id === convid);
+      if (conv) dispatch(setCurrentConversation(conv));
+    }
+  }, [conversations?.conversations, dispatch, pathname]);
 
   useEffect(() => {
     dispatch(getFollowingsById({ userId: user }));
@@ -47,13 +55,19 @@ function Messenger() {
   useEffect(() => {
     socket.current.emit('add-user', user, currentConversation?.id);
     socket.current.on('get-users', (users) => {
-      setOnlineUsers(
-        followingDetails?.followings.filter((f) =>
-          users.some((u) => u.userId === f?.user?.id),
-        ),
+      const onlineFrnds = followingDetails?.followings.filter((f) =>
+        users.some((u) => u.userId === f?.user?.id),
       );
+
+      dispatch(setOnlineFriends(onlineFrnds));
     });
-  }, [currentConversation?.id, followingDetails?.followings, socket, user]);
+  }, [
+    currentConversation?.id,
+    dispatch,
+    followingDetails?.followings,
+    user,
+    socket,
+  ]);
 
   return (
     <>
@@ -73,10 +87,9 @@ function Messenger() {
                 : 'messenger__conv'
             }
           >
-            <ConversationList
-              conversations={conversations}
-              setCurrentConversation={setCurrentConversation}
-            />
+            {conversations?.conversations && (
+              <ConversationList conversations={conversations?.conversations} />
+            )}
           </div>
         </div>
         <Divider />
@@ -86,12 +99,7 @@ function Messenger() {
             <p>You have x new messages.Click conversation to read.</p>
           )}
           <Route path={routes.messageTemplate} exact>
-            {currentConversation && (
-              <ChatArea
-                currentConversation={currentConversation}
-                socket={socket}
-              />
-            )}
+            {currentConversation && <ChatArea socket={socket} />}
           </Route>
         </div>
       </Paper>

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Socket } from 'socket.io-client';
 
 import List from '@material-ui/core/List';
@@ -9,53 +9,38 @@ import Divider from '@material-ui/core/Divider';
 import Message from './Message';
 import SendMessage from './SendMessage';
 
-import { useGetMessages, useScrollToLatestMessageRef } from './hooks';
+import { useScrollToLatestMessageRef } from './hooks';
+import { getMessages, setCurrentConversationSeen } from '../../redux/ChatSlice';
 
-function ChatArea({ currentConversation, socket }) {
-  // const socket = useSocket();
-  const [typing, setTyping] = useState(false);
+function ChatArea({ socket }) {
   const { user } = useSelector((state) => state.auth.account);
-  const [messages, setMessages] = useGetMessages({
-    currentConvId: currentConversation?.id,
+  const { messages, typing, currentConversation } = useSelector(
+    (state) => state.chat,
+  );
+
+  const scrollToLatestMsgRef = useScrollToLatestMessageRef({
+    messages: messages?.messages,
   });
-  const [liveMessage, setLiveMessage] = useState('');
-  const scrollToLatestMsgRef = useScrollToLatestMessageRef({ messages });
+  const dispatch = useDispatch();
+
+  // const { current } = socket;
 
   useEffect(() => {
-    socket.current.on('get-message', (data) => {
-      setLiveMessage({
-        conversation: data.convId,
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now().toString(),
-        updatedAt: Date.now().toString(),
-        id: data.senderId + Date.now().toString(), // temp id for live socket msgs only
-      });
-    });
-  }, [socket]);
+    dispatch(getMessages({ convId: currentConversation?.id }));
+  }, [currentConversation?.id, dispatch]);
 
   useEffect(() => {
-    if (
-      liveMessage &&
-      currentConversation?.users.includes(liveMessage.sender)
-    ) {
-      setMessages((prev) => [...prev, liveMessage]);
-    }
-  }, [currentConversation?.users, liveMessage, setMessages]);
-
-  function updateMessagesFromChild(data) {
-    setMessages([...messages, data]);
-  }
-
-  function updateTypingFromChild(isTyping) {
-    setTyping(isTyping);
-  }
+    // mark conversation read on mount
+    if (currentConversation?.seenBy?.includes(user))
+      setCurrentConversationSeen(true);
+    else setCurrentConversationSeen(false);
+  }, [currentConversation?.seenBy, user]);
 
   return (
     <div>
       <List className="messenger__chat-area">
-        {messages &&
-          messages.map((msg) => (
+        {messages?.messages &&
+          messages?.messages.map((msg) => (
             <div ref={scrollToLatestMsgRef} key={msg.id}>
               <Message message={msg} own={user === msg.sender} />
             </div>
@@ -63,21 +48,12 @@ function ChatArea({ currentConversation, socket }) {
       </List>
       {typing && 'Typing...'}
       <Divider />
-      <SendMessage
-        currentConversation={currentConversation}
-        updateMessages={updateMessagesFromChild}
-        updateTyping={updateTypingFromChild}
-        socket={socket}
-      />
+      <SendMessage socket={socket} />
     </div>
   );
 }
 
 ChatArea.propTypes = {
-  currentConversation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    users: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }).isRequired,
   socket: PropTypes.shape({ current: PropTypes.instanceOf(Socket) }).isRequired,
 };
 

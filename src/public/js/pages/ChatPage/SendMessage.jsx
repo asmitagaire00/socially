@@ -8,32 +8,47 @@ import SendIcon from '@material-ui/icons/Send';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 
-import messageService from '../../services/MessageService';
-import { setNotification } from '../../redux/NotificationSlice';
+import { setTyping, createMessage, addNewMessage } from '../../redux/ChatSlice';
 
-function SendMessage({
-  currentConversation,
-  updateMessages,
-  updateTyping,
-  socket,
-}) {
-  const [message, setMessage] = useState('');
+function SendMessage({ socket }) {
   const dispatch = useDispatch();
+  const [typingMessage, setTypingMessage] = useState('');
+  // const [liveMessage, setLiveMessage] = useState('');
+  const [curConvLiveUsersId, setCurConvLiveUsersId] = useState('');
   const { user } = useSelector((state) => state.auth.account);
+  const { currentConversation } = useSelector((state) => state.chat);
+
   const typingTimeout = useRef(null);
 
+  const { current } = socket;
+
   useEffect(() => {
-    socket.current.on('display-typing', ({ isTyping }) => {
-      updateTyping(isTyping);
+    current?.on('display-typing', ({ isTyping }) => {
+      dispatch(setTyping(isTyping));
     });
-  }, [socket, updateTyping]);
+  }, [dispatch, current]);
+
+  useEffect(() => {
+    current?.on('get-message', (data) => {
+      const msg = {
+        conversation: data.convId,
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now().toString(),
+        updatedAt: Date.now().toString(),
+        id: data.senderId + Date.now().toString(), // temp id for live socket msgs only
+      };
+
+      dispatch(addNewMessage(msg));
+    });
+  }, [current, dispatch]);
 
   function handleMessageInputChange(e) {
-    setMessage(e.target.value);
+    setTypingMessage(e.target.value);
   }
 
   function timeoutFunction() {
-    socket.current.emit('typing', {
+    current.emit('typing', {
       convId: currentConversation?.id,
       senderId: user,
       receiversId: currentConversation?.users.filter((u) => u !== user),
@@ -43,7 +58,7 @@ function SendMessage({
 
   function handleKeyUp(e) {
     if (e.code !== 'Enter') {
-      socket.current.emit('typing', {
+      current.emit('typing', {
         convId: currentConversation?.id,
         senderId: user,
         receiversId: currentConversation?.users.filter((u) => u !== user),
@@ -54,37 +69,38 @@ function SendMessage({
     }
   }
 
+  useEffect(() => {
+    // mark conv as read to those users who are live in current conv chat
+    current.on('get-users', (users) => {
+      const curLiveUsersId = users
+        .filter((u) => u.convId === currentConversation?.id)
+        .map((u) => u.userId);
+
+      setCurConvLiveUsersId(curLiveUsersId);
+    });
+  }, [current, currentConversation?.id]);
+
   function handleSendMessage(e) {
     e.preventDefault();
 
     const messageData = {
       convId: currentConversation?.id,
       senderId: user,
-      text: message,
+      text: typingMessage,
+      seenBy: curConvLiveUsersId,
     };
 
-    socket.current.emit('send-message', {
+    current.emit('send-message', {
       ...messageData,
       receiversId: currentConversation?.users,
       createdAt: Date.now().toString(),
       updatedAt: Date.now().toString(),
     });
 
-    messageService
-      .createMessage(messageData)
-      .then((res) => {
-        const { data } = res.data;
-        setMessage('');
-        updateMessages(data);
-      })
-      .catch(() =>
-        dispatch(
-          setNotification({
-            message: 'Error. Could not create message!',
-            isError: true,
-          }),
-        ),
-      );
+    console.log('current live users conv: ', curConvLiveUsersId);
+
+    dispatch(createMessage(messageData));
+    setTypingMessage('');
   }
 
   return (
@@ -96,7 +112,7 @@ function SendMessage({
             label=""
             fullWidth
             onChange={handleMessageInputChange}
-            value={message}
+            value={typingMessage}
             onKeyUp={handleKeyUp}
           />
         </Grid>
@@ -111,12 +127,12 @@ function SendMessage({
 }
 
 SendMessage.propTypes = {
-  currentConversation: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    users: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }).isRequired,
-  updateMessages: PropTypes.func.isRequired,
-  updateTyping: PropTypes.func.isRequired,
+  // currentConversation: PropTypes.shape({
+  //   id: PropTypes.string.isRequired,
+  //   users: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // }).isRequired,
+  // updateMessages: PropTypes.func.isRequired,
+  // updateTyping: PropTypes.func.isRequired,
   socket: PropTypes.shape({ current: PropTypes.instanceOf(Socket) }).isRequired,
 };
 
