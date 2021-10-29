@@ -1,5 +1,4 @@
-import useGetMessages from './useGetMessages';
-import useGetConversations from './useGetConversations';
 import useScrollToLatestMessageRef from './useScrollToLatestMessageRef';
 
-export { useGetMessages, useGetConversations, useScrollToLatestMessageRef };
+// eslint-disable-next-line import/prefer-default-export
+export { useScrollToLatestMessageRef };
