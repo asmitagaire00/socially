@@ -13,7 +13,6 @@ import { setTyping, createMessage, addNewMessage } from '../../redux/ChatSlice';
 function SendMessage({ socket }) {
   const dispatch = useDispatch();
   const [typingMessage, setTypingMessage] = useState('');
-  // const [liveMessage, setLiveMessage] = useState('');
   const [curConvLiveUsersId, setCurConvLiveUsersId] = useState('');
   const { user } = useSelector((state) => state.auth.account);
   const { currentConversation } = useSelector((state) => state.chat);
@@ -97,8 +96,6 @@ function SendMessage({ socket }) {
       updatedAt: Date.now().toString(),
     });
 
-    console.log('current live users conv: ', curConvLiveUsersId);
-
     dispatch(createMessage(messageData));
     setTypingMessage('');
   }
@@ -127,12 +124,6 @@ function SendMessage({ socket }) {
 }
 
 SendMessage.propTypes = {
-  // currentConversation: PropTypes.shape({
-  //   id: PropTypes.string.isRequired,
-  //   users: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // }).isRequired,
-  // updateMessages: PropTypes.func.isRequired,
-  // updateTyping: PropTypes.func.isRequired,
   socket: PropTypes.shape({ current: PropTypes.instanceOf(Socket) }).isRequired,
 };
 
