@@ -110,6 +110,12 @@ const UserSlice = createSlice({
     loading: false,
     followerDetails: null,
     followingDetails: null,
+    onlineFriends: null,
+  },
+  reducers: {
+    setOnlineFriends: (state, { payload }) => {
+      state.onlineFriends = payload;
+    },
   },
   extraReducers: {
     [getFollowersById.pending]: (state) => {
@@ -162,5 +168,13 @@ const UserSlice = createSlice({
   },
 });
 
-export { getFollowersById, getFollowingsById, followUser, unfollowUser };
+const { setOnlineFriends } = UserSlice.actions;
+
+export {
+  getFollowersById,
+  getFollowingsById,
+  followUser,
+  unfollowUser,
+  setOnlineFriends,
+};
 export default UserSlice.reducer;
