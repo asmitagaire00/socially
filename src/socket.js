@@ -1,15 +1,21 @@
 const accessEnv = require('./helpers/accessEnv');
 
 const ChatService = {
-  users: [],
+  users: [], // online users
 
   getUsers() {
     return this.users;
   },
 
   addUser(userId, convId, socketId) {
+    // add new user if it doest exist already,
+    // else, remove user if it exists and replace with same user(different convid or socketid)
     if (!this.users.some((user) => user.userId === userId)) {
       this.users.push({ userId, convId, socketId });
+    } else {
+      const arr = this.users.filter((user) => user.userId !== userId);
+      arr.push({ userId, convId, socketId });
+      this.users = arr;
     }
   },
 
@@ -40,8 +46,10 @@ function runSocket(server) {
     /* Messaging */
     socket.on('send-message', ({ convId, senderId, receiversId, text }) => {
       const receivers = ChatService.getRecipientUsers(receiversId);
+      // remove sender from the receivers list
+      const receiversList = receivers.filter((r) => r.userId !== senderId);
 
-      receivers.forEach((receiver) => {
+      receiversList.forEach((receiver) => {
         io.to(receiver.socketId).emit('get-message', {
           convId,
           senderId,
