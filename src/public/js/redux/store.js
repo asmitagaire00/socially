@@ -1,10 +1,11 @@
+import { reducer as formReducer } from 'redux-form';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-import { reducer as formReducer } from 'redux-form';
 import authReducer from './AuthSlice';
-import notificationReducer from './NotificationSlice';
 import postReducer from './PostSlice';
 import userReducer from './UserSlice';
+import chatReducer from './ChatSlice';
+import notificationReducer from './NotificationSlice';
 
 const allReducers = combineReducers({
   auth: authReducer,
@@ -12,6 +13,7 @@ const allReducers = combineReducers({
   post: postReducer,
   form: formReducer,
   user: userReducer,
+  chat: chatReducer,
 });
 
 const rootReducer = (state, action) => {
