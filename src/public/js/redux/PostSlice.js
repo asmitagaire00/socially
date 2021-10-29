@@ -274,10 +274,9 @@ const PostSlice = createSlice({
   },
 });
 
-const { clearPosts, clearFollowedPosts } = PostSlice.actions;
+const { clearPosts } = PostSlice.actions;
 export {
   clearPosts,
-  clearFollowedPosts,
   createPost,
   getPosts,
   getPostsByUserName,
