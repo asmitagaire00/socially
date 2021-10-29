@@ -13,10 +13,10 @@ router.post('/', authorize(), validation.createMessageSchema, createMessage);
 module.exports = router;
 
 function createMessage(req, res, next) {
-  const { conversation, sender, text } = req.body;
+  const { conversation, sender, text, seenBy } = req.body;
 
   messageService
-    .createMessage({ conversation, sender, text })
+    .createMessage({ conversation, sender, text, seenBy })
     .then((msgObj) =>
       sendResponse(res, msgObj, 'Created message successfully.'),
     )

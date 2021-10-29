@@ -9,6 +9,7 @@ function createMessageSchema(req, res, next) {
     conversation: Joi.string().length(24).required(),
     sender: Joi.string().length(24).required(),
     text: Joi.string().required(),
+    seenBy: Joi.array().items(Joi.string().length(24)).required(),
   });
 
   validateRequest(req, next, schema);

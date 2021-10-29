@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const schema = new Schema(
   {
     users: [{ type: Schema.Types.ObjectId }],
+    seenBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
   { timestamps: true },
 );

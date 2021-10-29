@@ -14,6 +14,8 @@ router.post(
   validation.createConversationSchema,
   createConversation,
 );
+router.put('/:convId/seen', authorize(), markConvAsSeen);
+router.get('/:convId', authorize(), getConversation);
 router.get('/:convId/messages', authorize(), getMessagesByConvId);
 router.get('/:convId/users', authorize(), getUsers);
 
@@ -52,6 +54,27 @@ function getUsers(req, res, next) {
     .getUsers(convId)
     .then((usersObj) =>
       sendResponse(res, usersObj, 'Get users by conversation id successful.'),
+    )
+    .catch(next);
+}
+
+function getConversation(req, res, next) {
+  const { convId } = req.params;
+
+  conversationService
+    .getConversation(convId)
+    .then((msgObj) => sendResponse(res, msgObj, 'Get conversation successful.'))
+    .catch(next);
+}
+
+function markConvAsSeen(req, res, next) {
+  const { convId } = req.params;
+  const { userIds } = req.body;
+
+  conversationService
+    .markAsSeen({ convId, userIds })
+    .then((convObj) =>
+      sendResponse(res, convObj, 'Update conversation seen successful.'),
     )
     .catch(next);
 }
