@@ -28,6 +28,30 @@ const getConversations = createAsyncThunk(
   },
 );
 
+const createConversation = createAsyncThunk(
+  'chat/createConversation',
+  async ({ userIds }, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await chatService.createConversation({ userIds });
+      const { data } = response.data;
+
+      return data;
+    } catch (err) {
+      const { message } = err.response.data.error;
+      // const message = 'Could not create conversation!';
+
+      dispatch(
+        setNotification({
+          message,
+          isError: true,
+        }),
+      );
+
+      return rejectWithValue(message);
+    }
+  },
+);
+
 const getMessages = createAsyncThunk(
   'chat/getMessages',
   async ({ convId }, { rejectWithValue, dispatch }) => {
@@ -157,6 +181,21 @@ const ChatSlice = createSlice({
       state.errorMessage = null;
     },
 
+    [createConversation.pending]: (state) => {
+      state.conversations.loading = true;
+    },
+    [createConversation.rejected]: (state, { payload }) => {
+      state.conversations.loading = false;
+      state.error = true;
+      state.errorMessage = payload;
+    },
+    [createConversation.fulfilled]: (state, { payload }) => {
+      state.conversations.loading = false;
+      state.conversations?.conversations?.push(payload);
+      state.error = false;
+      state.errorMessage = null;
+    },
+
     [getMessages.pending]: (state) => {
       state.messages.loading = true;
     },
@@ -216,5 +255,6 @@ export {
   setTyping,
   markCurrentConversationSeen,
   setCurrentConversationSeen,
+  createConversation,
 };
 export default ChatSlice.reducer;
