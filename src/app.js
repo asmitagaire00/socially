@@ -5,16 +5,17 @@ const cookieParser = require('cookie-parser');
 
 const log = require('./helpers/logger');
 const accessEnv = require('./helpers/accessEnv');
-const globalErrorHandler = require('./middleware/globalErrorHandler');
 const swaggerRouter = require('./api/docs/swagger');
-const accountRouter = require('./api/v1/account/account.controller');
 const userRouter = require('./api/v1/user/user.controller');
 const postRouter = require('./api/v1/post/post.controller');
 const likeRouter = require('./api/v1/like/like.controller');
 const followRouter = require('./api/v1/follow/follow.controller');
-const commentRouter = require('./api/v1/comment/comment.controller');
-const conversationRouter = require('./api/v1/conversation/conversation.controller');
+const searchRouter = require('./api/v1/search/search.controller');
 const messageRouter = require('./api/v1/message/message.controller');
+const commentRouter = require('./api/v1/comment/comment.controller');
+const accountRouter = require('./api/v1/account/account.controller');
+const globalErrorHandler = require('./middleware/globalErrorHandler');
+const conversationRouter = require('./api/v1/conversation/conversation.controller');
 
 const app = express();
 const NODE_ENV = accessEnv('NODE_ENV');
@@ -68,6 +69,7 @@ app.use('/api/v1/follows', followRouter);
 app.use('/api/v1/conversations', conversationRouter);
 app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/api-docs', swaggerRouter);
+app.use('/api/v1/search', searchRouter);
 
 app.all('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));

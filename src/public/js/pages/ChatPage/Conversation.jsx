@@ -97,7 +97,6 @@ Conversation.propTypes = {
   conversation: PropTypes.shape({
     id: PropTypes.string.isRequired,
     users: PropTypes.arrayOf(PropTypes.string).isRequired,
-    recentMessageSeenBy: PropTypes.arrayOf(PropTypes.string).isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
     seenBy: PropTypes.arrayOf(PropTypes.string).isRequired,

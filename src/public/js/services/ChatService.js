@@ -1,12 +1,12 @@
 import axios from 'axios';
 import config from '../config/config';
 
-function createConversation(userIds) {
+function createConversation({ userIds }) {
   return axios({
     method: 'POST',
     withCredentials: true,
     url: `${config.apiUrl}/api/v1/conversations/`,
-    data: userIds,
+    data: { userIds },
   });
 }
 
