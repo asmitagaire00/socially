@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 const db = require('../../../helpers/db');
 const CommonError = require('../../../lib/error/commonErrors');
+const ConversationError = require('./conversation.errors');
 const ApplicationError = require('../../../lib/error/ApplicationError');
 
 module.exports = {
@@ -18,6 +19,12 @@ module.exports = {
  */
 async function createConversation(userIds) {
   const query = { users: userIds };
+  const conv = await db.Conversation.findOne(query);
+
+  if (conv) {
+    throw new ApplicationError(ConversationError.CONVERSATION_ALREADY_EXISTS);
+  }
+
   const newConv = await new db.Conversation(query).save();
   return newConv;
 }
