@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
-import TextField from '@material-ui/core/TextField';
 
 import ChatArea from './ChatArea';
 import routes from '../../config/routes';
@@ -16,6 +15,7 @@ import {
   setCurrentConversation,
 } from '../../redux/ChatSlice';
 import { getFollowingsById, setOnlineFriends } from '../../redux/UserSlice';
+import Search from '../../components/Search/Search';
 
 function Messenger() {
   const { user } = useSelector((state) => state.auth.account);
@@ -77,7 +77,8 @@ function Messenger() {
       <Paper variant="outlined" square className="messenger">
         <div className="messenger__conversations">
           <div className="messenger__search">
-            <TextField label="" variant="outlined" fullWidth />
+            {/* <TextField label="" variant="outlined" fullWidth /> */}
+            <Search />
           </div>
           <Divider />
           <div
