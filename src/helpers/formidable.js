@@ -10,7 +10,6 @@ function parseMultiFormData(req, res, next) {
 
   form.parse(req, (err, fields, file) => {
     if (err) {
-      console.log('Error while parsing file: ', err);
       return next(err);
     }
     req.body.image = file.image ? file.image.path : undefined; // get image path
