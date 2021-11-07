@@ -43,6 +43,7 @@ describe('Like routes', () => {
           createdAt: expect.anything(),
           updatedAt: expect.anything(),
           id: expect.anything(),
+          user: expect.anything(),
         },
         message: expect.anything(),
         success: true,

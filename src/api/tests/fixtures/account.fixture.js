@@ -16,6 +16,7 @@ const accountOne = {
   passwordHash,
   firstName: faker.name.findName(),
   lastName: faker.name.findName(),
+  userName: faker.name.findName() + Math.floor(Math.random() * 10000),
 };
 const accountOneJwtToken = generateJwtToken(accountOne);
 
@@ -25,12 +26,14 @@ const accountTwo = {
   passwordHash,
   firstName: faker.name.findName(),
   lastName: faker.name.findName(),
+  userName: faker.name.findName() + Math.floor(Math.random() * 10000),
 };
 
 const accountVerifiedOne = {
   _id: mongoose.Types.ObjectId(),
   firstName: 'ggggg',
   lastName: 'ggggg',
+  userName: 'ggggg123',
   email: 'ggg@gmail.com',
   passwordHash,
   createdAt: '2021-08-15T07:18:57.178+00:00',
@@ -41,6 +44,7 @@ const accountVerifiedTwo = {
   _id: mongoose.Types.ObjectId(),
   firstName: 'hhhhh',
   lastName: 'hhhhh',
+  userName: 'hhhhh123',
   email: 'hhh@gmail.com',
   passwordHash,
   createdAt: '2021-08-13T07:18:57.178+00:00',

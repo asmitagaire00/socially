@@ -12,6 +12,9 @@ const {
   accountPassword,
 } = require('../../../../fixtures/account.fixture');
 
+// increase test timeout
+jest.setTimeout(10000);
+
 // setup test database and teardown processes
 setupTestDB();
 
@@ -345,6 +348,7 @@ describe('Account routes', () => {
           id: expect.anything(),
           isVerified: true,
           lastName: expect.anything(),
+          userName: expect.anything(),
           user: expect.anything(),
           verifiedAt: expect.anything(),
         },
