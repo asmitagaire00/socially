@@ -14,10 +14,10 @@ import { register } from '../../redux/AuthSlice';
 function renderField({ input, label, type, meta: { touched, error } }) {
   return (
     <div>
-      <label htmlFor={`register-${label}`}>{label}</label>
+      <label htmlFor={`register-${label.replace(/\s/g, '')}`}>{label}</label>
       <div>
         <input
-          id={`register-${label}`}
+          id={`register-${label.replace(/\s/g, '')}`}
           {...input}
           type={type}
           className={touched && error ? 'input input--error' : 'input'}
