@@ -11,10 +11,12 @@ const schema = new Schema({
   replacedByToken: String,
 });
 
+// eslint-disable-next-line func-names
 schema.virtual('isExpired').get(function () {
   return Date.now() >= this.expiresAt;
 });
 
+// eslint-disable-next-line func-names
 schema.virtual('isValid').get(function () {
   return !this.revokedAt && !this.isExpired;
 });

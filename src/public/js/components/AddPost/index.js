@@ -1,1 +1,1 @@
-export { default } from "./AddPost";
+export { default } from './AddPost';
