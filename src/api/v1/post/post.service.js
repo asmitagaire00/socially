@@ -126,7 +126,11 @@ async function getPosts(userId, skip, limit, followed) {
     .populate({
       path: 'comments',
       options: { sort: { createdAt: 'desc' } },
-      populate: { path: 'user' },
+      populate: {
+        path: 'user',
+        select: 'account',
+        populate: { path: 'account', select: 'firstName lastName userName' },
+      },
     })
     .sort({ createdAt: 'desc' })
     .skip(skip)
