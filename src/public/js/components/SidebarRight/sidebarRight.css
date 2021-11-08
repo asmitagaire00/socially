@@ -54,6 +54,5 @@
   .sidebar-right {
     display: block;
     flex: 0 1 var(--width-sidebar-right);
-    border: 1px solid black;
   }
 }

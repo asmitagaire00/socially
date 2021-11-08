@@ -1,5 +1,5 @@
 .add-post {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 }
 
 .add-post__textarea {
@@ -7,6 +7,7 @@
   resize: none;
   font-size: var(--font-default);
   font-family: inherit;
+  border: none;
   padding: var(--padding-s) var(--padding-s);
 }
 
@@ -16,12 +17,17 @@
 
 .add-post__btn {
   color: var(--color-white) !important;
-  background-color: var(--color-primary) !important;
+  /* background-color: var(--color-primary) !important; */
+}
+
+.add-post__btn svg {
+  fill: red;
 }
 
 .add-post__btn-list {
   display: flex;
   justify-content: space-between;
+  padding: 0 var(--padding-s) var(--padding-s) var(--padding-s);
 }
 
 /* not using display: none; to hide because label would not be accessible by keyboard*/

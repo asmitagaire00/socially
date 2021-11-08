@@ -13,6 +13,7 @@
 @import '../js/components/AppLayout/appLayout.css';
 @import '../js/components/Login/login.css';
 @import '../js/components/Register/register.css';
+@import '../js/components/Comment/comment.css';
 
 @import '../js/pages/ProfilePage/profilePage.css';
 @import '../js/pages/LandingPage/landingPage.css';

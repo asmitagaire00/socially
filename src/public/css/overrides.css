@@ -50,3 +50,21 @@
 .MuiAlert-root {
   font-size: var(--font-default) !important;
 }
+
+.MuiTooltip-tooltip {
+  font-size: var(--font-s) !important;
+}
+
+/* resize dialog */
+.MuiDialog-paperWidthSm {
+  width: 360px !important;
+}
+@media (min-width: 48em) {
+  .MuiDialog-paperWidthSm {
+    width: 400px !important;
+  }
+}
+
+.MuiTypography-h6 {
+  font-size: var(--font-default) !important;
+}

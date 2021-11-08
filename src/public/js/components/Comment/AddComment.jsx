@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
+import TextAreaResize from '@material-ui/core/TextareaAutosize';
 
 import { createComment } from '../../redux/PostSlice';
 
@@ -22,14 +23,14 @@ function AddComment({ postId }) {
   }
 
   return (
-    <>
+    <div className="add-comment">
       <div>
-        <textarea
+        <TextAreaResize
           name="add-comment"
-          rows="2"
-          placeholder="Comment..."
           onChange={handleCommentChange}
           value={comment}
+          rows={2}
+          className="add-comment__textarea"
         />
       </div>
       <div>
@@ -37,7 +38,7 @@ function AddComment({ postId }) {
           {loading ? 'Commenting...' : 'Comment'}
         </Button>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -1,0 +1,12 @@
+.add-comment__textarea {
+  width: 100%;
+  resize: none;
+  font-size: var(--font-default);
+  font-family: inherit;
+  padding: var(--padding-s) var(--padding-s);
+}
+
+.comment__comment {
+  background-color: var(--color-secondary);
+  margin: var(--margin-l) 0;
+}

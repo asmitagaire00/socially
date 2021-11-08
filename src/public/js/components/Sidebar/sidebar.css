@@ -1,5 +1,7 @@
 .sidebar {
   display: none;
+  position: sticky;
+  top: var(--height-header);
 }
 
 @media (min-width: 48em) {
@@ -7,7 +9,7 @@
     display: block;
     flex: 0 1 auto;
     height: calc(100vh - var(--height-header));
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
 
   .sidebar__list {

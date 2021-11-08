@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Fab from '@material-ui/core/Fab';
+import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import TextAreaResize from '@material-ui/core/TextareaAutosize';
+
 import AddAPhotoSharp from '@material-ui/icons/AddAPhotoSharp';
 
 import { createPost } from '../../redux/PostSlice';
@@ -14,6 +18,7 @@ export default function AddPost() {
 
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.post);
+  const { firstName } = useSelector((state) => state.auth.account);
 
   function handleFileSelect(e) {
     const selectedImage = e.target.files[0];
@@ -35,16 +40,15 @@ export default function AddPost() {
   }
 
   return (
-    <div className="add-post">
+    <Paper className="add-post" variant="outlined" square>
       <div>
-        <textarea
+        <TextAreaResize
           name="add-post"
-          id=""
-          rows="5"
           className="add-post__textarea"
-          placeholder="What's on your mind, Dennis?"
+          placeholder={`What's on your mind, ${firstName}?`}
           onChange={handleCaptionChange}
           value={caption}
+          rows={2}
         />
         {previewImageUrl && (
           <img
@@ -70,22 +74,24 @@ export default function AddPost() {
               className="add-post__file-select--hidden"
               onChange={handleFileSelect}
             />
-            <Fab
-              size="small"
-              component="span"
-              aria-label="add"
-              className="add-post__btn"
-            >
-              <AddAPhotoSharp />
-            </Fab>
+            <Tooltip title="Add photo">
+              <IconButton
+                size="small"
+                component="span"
+                aria-label="Add photo"
+                className="add-post__btn"
+              >
+                <AddAPhotoSharp />
+              </IconButton>
+            </Tooltip>
           </label>
         </div>
         <div className="add-post__btn-list--right">
           <Button onClick={handlePostSubmit} disabled={loading}>
-            {loading ? 'Posting...' : 'Post'}
+            Post
           </Button>
         </div>
       </div>
-    </div>
+    </Paper>
   );
 }

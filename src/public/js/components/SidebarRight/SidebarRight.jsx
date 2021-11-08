@@ -1,36 +1,15 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import CakeIcon from '@material-ui/icons/Cake';
 import Avatar from '@material-ui/core/Avatar';
+import Paper from '@material-ui/core/Paper';
 
 import FeaturedImg from '../../../assets/img/girl.jpg';
 import AvatarImg from '../../../assets/img/dennis.jpeg';
 
-import { logout } from '../../redux/AuthSlice';
-import TokenService from '../../services/TokenService';
-
 export default function SidebarRight() {
-  const dispatch = useDispatch();
-
-  function handleClick() {
-    // dispatch(showAlert());
-  }
-
-  function handleLogoutClick() {
-    const jwtToken = TokenService.getToken();
-    if (jwtToken) dispatch(logout(jwtToken));
-  }
-
   return (
-    <>
-      <button type="button" onClick={handleClick}>
-        Dont click me
-      </button>
-      <br />
-      <button type="button" onClick={handleLogoutClick}>
-        Logout
-      </button>
+    <Paper variant="outlined" square>
       <div className="sidebar-right__birthday">
         <div className="sidebar-right__birthday-icon">
           <CakeIcon />
@@ -96,6 +75,6 @@ export default function SidebarRight() {
           </li>
         </ul>
       </div>
-    </>
+    </Paper>
   );
 }

@@ -54,6 +54,7 @@ function DialogCustom({ open, handleClose, children }) {
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        className="foo"
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Comment

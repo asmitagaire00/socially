@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -23,6 +25,9 @@ import routes from '../../config/routes';
 
 export default function Post(props) {
   const { likes, comments, caption, image, user, createdAt, postId } = props;
+
+  dayjs.extend(relativeTime);
+  const parsedCreatedAt = dayjs(createdAt).fromNow();
 
   const [commentOpen, setCommentOpen] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -70,7 +75,7 @@ export default function Post(props) {
       <DialogCustom open={commentOpen} handleClose={handleCommentClose}>
         <Comment comments={comments} postId={postId} />
       </DialogCustom>
-      <Card className="post">
+      <Card className="post" variant="outlined" square>
         <CardHeader
           avatar={<Avatar src={AvatarImg} className="post__avatar" />}
           action={
@@ -84,11 +89,12 @@ export default function Post(props) {
                 pathname: routes.profile(userName),
                 state: { userId, userName },
               }}
+              className="link"
             >
               {name}
             </Link>
           }
-          subheader={createdAt}
+          subheader={parsedCreatedAt}
         />
         {image && (
           <CardMedia className="post__image" image={image} title={caption} />

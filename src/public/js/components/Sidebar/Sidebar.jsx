@@ -7,10 +7,11 @@ import Group from '@material-ui/icons/Group';
 import Bookmarks from '@material-ui/icons/Bookmarks';
 import Event from '@material-ui/icons/Event';
 import Work from '@material-ui/icons/Work';
+import Paper from '@material-ui/core/Paper';
 
 export default function Sidebar() {
   return (
-    <>
+    <Paper style={{ height: '100vh' }} variant="outlined" square>
       <ul className="sidebar__list">
         <li className="sidebar__list-item">
           <DynamicFeed className="sidebar__list-icon" />
@@ -41,6 +42,6 @@ export default function Sidebar() {
           <span className="sidebar__list-text">Jobs</span>
         </li>
       </ul>
-    </>
+    </Paper>
   );
 }
