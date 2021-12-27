@@ -40,12 +40,12 @@
 }
 
 .sidebar-right__avatar {
-  border-radius: 0 !important;
+  border-radius: 50% !important;
   margin-right: var(--margin-xl);
 }
 
 .sidebar-right__avatar--active {
-  border-radius: 0 !important;
+  border-radius: 50% !important;
   margin-right: var(--margin-xl);
   border: 2px solid var(--color-green);
 }
